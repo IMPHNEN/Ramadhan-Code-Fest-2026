@@ -1,0 +1,12 @@
+# Kilocode ignore file
+# Files to ignore during code operations
+
+node_modules/
+dist/
+*.log
+.DS_Store
+.env
+.vscode/
+.idea/
+coverage/
+*.tsbuildinfo

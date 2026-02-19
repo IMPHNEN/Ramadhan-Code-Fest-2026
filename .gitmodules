@@ -1,3 +1,6 @@
 [submodule "InternetGrounding"]
-	path = InternetGrounding
-	url = https://github.com/suryami62/InternetGrounding.git
+        path = InternetGrounding
+        url = https://github.com/suryami62/InternetGrounding.git
+[submodule "malasfetch"]
+        path = malasfetch
+        url = https://github.com/broman0x/malasfetch.git
