@@ -55,3 +55,6 @@
 [submodule "Flip-for-Business-PHP"]
 	path = Flip-for-Business-PHP
 	url = https://github.com/Akselerasi-Prima-Digital/Flip-for-Business-PHP.git
+[submodule "shoppingcart"]
+	path = shoppingcart
+	url = https://github.com/Nipaaaa1/shoppingcart.git
