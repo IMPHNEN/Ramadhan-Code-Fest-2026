@@ -1,0 +1,44 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Kalkulator Rumus & Subneting</title>
+
+  <link rel="stylesheet" href="./assets/css/style.css">
+</head>
+<body>
+  <h2>Kalkulator Rumus Matematika & Subneting</h2>
+
+  <select id="rumus">
+    <option value="">Pilih Rumus</option>
+    <option value="miring">Phytagoras - Miring</option>
+    <option value="alas">Phytagoras - Alas</option>
+    <option value="tinggi">Phytagoras - Tinggi</option>
+    <option value="persegi">Luas Persegi</option>
+    <option value="lp">Luas Persegi Panjang</option>
+    <option value="kp">Keliling Persegi Panjang</option>
+    <option value="ls">Luas Segitiga</option>
+    <option value="ks">Keliling Segitiga</option>
+    <option value="newton1">Newton 1</option>
+    <option value="Gaya">Newton 2 - ΣF</option>
+    <option value="Massa">Newton 2 - m</option>
+    <option value="Percepatan">Newton 2 - a</option>
+    <option value="newton3">Newton 3</option>
+    <option value="gravitasi">Gravitasi</option>
+    <option value="energi">Energi Kinetik</option>
+    <option value="tekanan">Tekanan</option>
+    <option value="subneting">Subneting</option>
+    <option value="data">Data</option>
+    <option value="statitiska data kelompok">Statistika Data Kelompok</option>
+  </select>
+
+  <div id="input-area"></div>
+
+  <button onclick="hitung()">Hitung</button>
+
+  <div id="hasil">Hasil : -</div>
+
+  <script src="./assets/js/main.js"></script>
+</body>
+</html>

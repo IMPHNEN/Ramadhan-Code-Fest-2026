@@ -1,0 +1,16 @@
+target/
+
+.git/
+.github/
+.gitignore
+
+*.env
+.env
+.env.local
+
+Dockerfile
+.dockerignore
+
+.vscode/
+.idea/
+*.swp

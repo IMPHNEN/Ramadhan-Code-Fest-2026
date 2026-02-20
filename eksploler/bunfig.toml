@@ -1,0 +1,8 @@
+[test]
+coverage = false
+
+[run]
+# Bun run options
+
+[install]
+# Install options

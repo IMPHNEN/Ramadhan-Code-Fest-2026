@@ -1,0 +1,124 @@
+{
+  "info": {
+    "_postman_id": "widal-api-v1",
+    "name": "Widal API v1",
+    "description": "API for encoding and decoding Sundanese/Indonesian text to Widal code.",
+    "schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
+  },
+  "variable": [
+    {
+      "key": "base_url",
+      "value": "http://localhost:8000/api/v1",
+      "type": "string"
+    }
+  ],
+  "item": [
+    {
+      "name": "Health Check",
+      "request": {
+        "method": "GET",
+        "header": [],
+        "url": {
+          "raw": "{{base_url}}/health",
+          "host": ["{{base_url}}"],
+          "path": ["health"]
+        }
+      }
+    },
+    {
+      "name": "Encode (to Widal)",
+      "request": {
+        "method": "POST",
+        "header": [
+          { "key": "Content-Type", "value": "application/json" },
+          { "key": "Accept", "value": "application/json" }
+        ],
+        "body": {
+          "mode": "raw",
+          "raw": "{\n  \"text\": \"halo dunia\",\n  \"reversal\": false\n}"
+        },
+        "url": {
+          "raw": "{{base_url}}/widal/encode",
+          "host": ["{{base_url}}"],
+          "path": ["widal", "encode"]
+        }
+      }
+    },
+    {
+      "name": "Encode with Reversal",
+      "request": {
+        "method": "POST",
+        "header": [
+          { "key": "Content-Type", "value": "application/json" },
+          { "key": "Accept", "value": "application/json" }
+        ],
+        "body": {
+          "mode": "raw",
+          "raw": "{\n  \"text\": \"halo dunia\",\n  \"reversal\": true\n}"
+        },
+        "url": {
+          "raw": "{{base_url}}/widal/encode",
+          "host": ["{{base_url}}"],
+          "path": ["widal", "encode"]
+        }
+      }
+    },
+    {
+      "name": "Decode (from Widal)",
+      "request": {
+        "method": "POST",
+        "header": [
+          { "key": "Content-Type", "value": "application/json" },
+          { "key": "Accept", "value": "application/json" }
+        ],
+        "body": {
+          "mode": "raw",
+          "raw": "{\n  \"text\": \"byaro pnyukninynya\"\n}"
+        },
+        "url": {
+          "raw": "{{base_url}}/widal/decode",
+          "host": ["{{base_url}}"],
+          "path": ["widal", "decode"]
+        }
+      }
+    },
+    {
+      "name": "Legacy: Transform (to_widal)",
+      "request": {
+        "method": "POST",
+        "header": [
+          { "key": "Content-Type", "value": "application/json" },
+          { "key": "Accept", "value": "application/json" }
+        ],
+        "body": {
+          "mode": "raw",
+          "raw": "{\n  \"text\": \"halo dunia\",\n  \"mode\": \"to_widal\"\n}"
+        },
+        "url": {
+          "raw": "{{base_url}}/widal",
+          "host": ["{{base_url}}"],
+          "path": ["widal"]
+        }
+      }
+    },
+    {
+      "name": "Legacy: Transform (from_widal)",
+      "request": {
+        "method": "POST",
+        "header": [
+          { "key": "Content-Type", "value": "application/json" },
+          { "key": "Accept", "value": "application/json" }
+        ],
+        "body": {
+          "mode": "raw",
+          "raw": "{\n  \"text\": \"byaro pnyukninynya\",\n  \"mode\": \"from_widal\"\n}"
+        },
+        "url": {
+          "raw": "{{base_url}}/widal",
+          "host": ["{{base_url}}"],
+          "path": ["widal"]
+        }
+      }
+    }
+  ]
+}

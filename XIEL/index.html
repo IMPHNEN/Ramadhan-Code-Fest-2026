@@ -1,0 +1,719 @@
+<!DOCTYPE html>
+<html lang="id">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>RAMADHAN CODE FEST 2026</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link
+        href="https://fonts.googleapis.com/css2?family=Amiri:ital,wght@0,400;0,700;1,400&family=Space+Grotesk:wght@300;500;700&display=swap"
+        rel="stylesheet">
+    <script src="https://cdn.tailwindcss.com"></script>
+    <style>
+        :root {
+            --bg-color: #050505;
+            --text-primary: #e0e0e0;
+            --accent-gold: #D4AF37;
+            --accent-green: #00FF99;
+            --glass-bg: rgba(10, 10, 10, 0.4);
+            --glass-border: rgba(255, 255, 255, 0.08);
+            --neon-shadow: 0 0 10px rgba(0, 255, 153, 0.3), 0 0 20px rgba(0, 255, 153, 0.2);
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            cursor: none;
+        }
+
+        body {
+            background-color: var(--bg-color);
+            color: var(--text-primary);
+            font-family: 'Space Grotesk', sans-serif;
+            overflow-x: hidden;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            min-height: 100vh;
+        }
+
+        .lantern-container {
+            position: fixed;
+            top: -20px;
+            width: 100%;
+            height: 200px;
+            z-index: 5;
+            pointer-events: none;
+            display: flex;
+            justify-content: space-around;
+            padding: 0 10%;
+        }
+
+        .lantern {
+            position: relative;
+            transform-origin: top center;
+            animation: swing 3s infinite ease-in-out alternate;
+        }
+
+        .lantern::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 50%;
+            width: 2px;
+            height: 100px;
+            background: rgba(212, 175, 55, 0.5);
+            transform: translateX(-50%);
+        }
+
+        .lantern-body {
+            width: 40px;
+            height: 60px;
+            background: rgba(212, 175, 55, 0.1);
+            border: 2px solid var(--accent-gold);
+            border-radius: 10px;
+            position: relative;
+            top: 100px;
+            box-shadow: 0 0 20px rgba(212, 175, 55, 0.2);
+            display: flex;
+            justify-content: center;
+            align-items: center;
+        }
+
+        .lantern-light {
+            width: 10px;
+            height: 20px;
+            background: #ffaa00;
+            border-radius: 50%;
+            box-shadow: 0 0 15px 5px #ffaa00;
+            animation: flicker 2s infinite random;
+        }
+
+        .l1 {
+            animation-duration: 4s;
+            animation-delay: 0s;
+            left: -10vw;
+        }
+
+        .l2 {
+            animation-duration: 5s;
+            animation-delay: 1s;
+            top: -30px;
+        }
+
+        .l3 {
+            animation-duration: 4.5s;
+            animation-delay: 0.5s;
+            left: 10vw;
+        }
+
+        @keyframes swing {
+            from {
+                transform: rotate(-5deg);
+            }
+
+            to {
+                transform: rotate(5deg);
+            }
+        }
+
+        @keyframes flicker {
+
+            0%,
+            100% {
+                opacity: 1;
+                transform: scale(1);
+            }
+
+            50% {
+                opacity: 0.8;
+                transform: scale(0.9);
+            }
+        }
+
+        #bg-canvas {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            z-index: -1;
+            background: linear-gradient(180deg, #020202 0%, #0a0f0d 100%);
+        }
+
+        .custom-cursor {
+            width: 40px;
+            height: 40px;
+            border: 1px solid var(--accent-green);
+            border-radius: 50%;
+            position: fixed;
+            pointer-events: none;
+            z-index: 9999;
+            transform: translate(-50%, -50%);
+            transition: width 0.3s, height 0.3s, background-color 0.3s;
+            mix-blend-mode: difference;
+        }
+
+        .custom-cursor.hovered {
+            width: 60px;
+            height: 60px;
+            background-color: rgba(0, 255, 153, 0.1);
+            border-color: transparent;
+        }
+
+        .cursor-dot {
+            width: 6px;
+            height: 6px;
+            background: var(--accent-green);
+            border-radius: 50%;
+            position: fixed;
+            pointer-events: none;
+            z-index: 9999;
+            transform: translate(-50%, -50%);
+        }
+
+        .container {
+            text-align: center;
+            padding: 2rem;
+            max-width: 900px;
+            width: 90%;
+            position: relative;
+            z-index: 10;
+        }
+
+        .glitch-wrapper {
+            position: relative;
+            margin-bottom: 0.5rem;
+        }
+
+        .glitch-text {
+            font-size: 3.5rem;
+            font-weight: 700;
+            color: white;
+            position: relative;
+            display: inline-block;
+        }
+
+        .glitch-text::before,
+        .glitch-text::after {
+            content: attr(data-text);
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+        }
+
+        .glitch-text::before {
+            left: 2px;
+            text-shadow: -1px 0 red;
+            clip: rect(44px, 450px, 56px, 0);
+            animation: glitch-anim-1 5s infinite linear alternate-reverse;
+        }
+
+        .glitch-text::after {
+            left: -2px;
+            text-shadow: -1px 0 blue;
+            clip: rect(44px, 450px, 56px, 0);
+            animation: glitch-anim-2 5s infinite linear alternate-reverse;
+        }
+
+        .arabic-title {
+            font-family: 'Amiri', serif;
+            font-size: 2.5rem;
+            color: var(--accent-gold);
+            margin-bottom: 3rem;
+            opacity: 0;
+            animation: textFadeIn 2s ease-out forwards 0.5s;
+            text-shadow: 0 0 15px rgba(212, 175, 55, 0.4);
+        }
+
+        .tilt-card {
+            transform-style: preserve-3d;
+            transform: perspective(1000px);
+        }
+
+        .countdown-frame {
+            position: relative;
+            padding: 3px;
+            background: linear-gradient(90deg, transparent, var(--accent-green), transparent);
+            border-radius: 20px;
+            animation: borderFlow 3s infinite linear;
+            background-size: 200% 100%;
+            transform: translateZ(20px);
+        }
+
+        .countdown-wrapper {
+            background: var(--glass-bg);
+            backdrop-filter: blur(16px);
+            -webkit-backdrop-filter: blur(16px);
+            border: 1px solid var(--glass-border);
+            border-radius: 18px;
+            padding: 3.5rem 2rem;
+            box-shadow: 0 20px 50px rgba(0, 0, 0, 0.5);
+            display: flex;
+            justify-content: center;
+            gap: 2.5rem;
+            flex-wrap: wrap;
+        }
+
+        .time-box {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            min-width: 90px;
+            cursor: none;
+            transition: transform 0.3s;
+        }
+
+        .time-box:hover {
+            transform: translateY(-5px);
+        }
+
+        .time-val {
+            font-size: 4rem;
+            font-weight: 300;
+            color: #fff;
+            line-height: 1;
+            text-shadow: 0 0 20px rgba(0, 255, 153, 0.4);
+            font-variant-numeric: tabular-nums;
+            position: relative;
+        }
+
+        .time-val::after {
+            content: '';
+            position: absolute;
+            bottom: -5px;
+            left: 0;
+            width: 100%;
+            height: 2px;
+            background: var(--accent-green);
+            transform: scaleX(0);
+            transition: transform 0.3s ease;
+        }
+
+        .time-box:hover .time-val::after {
+            transform: scaleX(1);
+        }
+
+        .time-label {
+            font-size: 0.8rem;
+            text-transform: uppercase;
+            letter-spacing: 3px;
+            color: rgba(255, 255, 255, 0.4);
+            margin-top: 15px;
+        }
+
+        .separator {
+            font-size: 3rem;
+            font-weight: 300;
+            color: var(--accent-gold);
+            opacity: 0.6;
+            margin-top: -5px;
+            animation: blink 1s infinite;
+        }
+
+        .dynamic-status {
+            margin-top: 2rem;
+            padding: 0.5rem 1.5rem;
+            border: 1px solid var(--accent-gold);
+            border-radius: 50px;
+            color: var(--accent-gold);
+            font-size: 0.9rem;
+            letter-spacing: 2px;
+            background: rgba(212, 175, 55, 0.05);
+            display: inline-block;
+            box-shadow: 0 0 10px rgba(212, 175, 55, 0.1);
+        }
+
+        .quote-box {
+            margin-top: 2rem;
+            font-style: italic;
+            color: #888;
+            border-left: 2px solid var(--accent-green);
+            padding-left: 1rem;
+            text-align: left;
+            display: inline-block;
+            max-width: 600px;
+            background: rgba(255, 255, 255, 0.01);
+            padding: 1rem 1.5rem;
+            position: relative;
+        }
+
+        footer {
+            margin-top: 4rem;
+            font-size: 0.75rem;
+            letter-spacing: 1px;
+            opacity: 0.6;
+        }
+
+        #music-toggle {
+            position: fixed;
+            bottom: 20px;
+            right: 20px;
+            background: rgba(0, 0, 0, 0.5);
+            border: 1px solid var(--glass-border);
+            color: var(--accent-green);
+            padding: 10px;
+            border-radius: 50%;
+            width: 40px;
+            height: 40px;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            z-index: 100;
+            cursor: none;
+            transition: all 0.3s;
+        }
+
+        #music-toggle:hover {
+            background: var(--accent-green);
+            color: black;
+            box-shadow: 0 0 15px var(--accent-green);
+            transform: scale(1.1);
+        }
+
+        @keyframes glitch-anim-1 {
+            0% {
+                clip: rect(30px, 9999px, 10px, 0);
+            }
+
+            20% {
+                clip: rect(80px, 9999px, 90px, 0);
+            }
+
+            100% {
+                clip: rect(60px, 9999px, 80px, 0);
+            }
+        }
+
+        @keyframes glitch-anim-2 {
+            0% {
+                clip: rect(10px, 9999px, 80px, 0);
+            }
+
+            20% {
+                clip: rect(90px, 9999px, 10px, 0);
+            }
+
+            100% {
+                clip: rect(30px, 9999px, 50px, 0);
+            }
+        }
+
+        @keyframes borderFlow {
+            0% {
+                background-position: 0% 50%;
+            }
+
+            100% {
+                background-position: 100% 50%;
+            }
+        }
+
+        @keyframes textFadeIn {
+            to {
+                opacity: 1;
+            }
+        }
+
+        @keyframes blink {
+            50% {
+                opacity: 0.2;
+            }
+        }
+
+        @media (max-width: 768px) {
+            .glitch-text {
+                font-size: 2.2rem;
+            }
+
+            .time-val {
+                font-size: 2.5rem;
+            }
+
+            .countdown-wrapper {
+                gap: 1rem;
+                padding: 2rem 1rem;
+            }
+
+            .separator {
+                display: none;
+            }
+
+            .lantern {
+                display: none;
+            }
+        }
+    </style>
+</head>
+
+<body onclick="playAudio()">
+
+    <div class="custom-cursor" id="cursor-ring"></div>
+    <div class="cursor-dot" id="cursor-dot"></div>
+
+    <canvas id="bg-canvas"></canvas>
+
+    <div class="lantern-container">
+        <div class="lantern l1">
+            <div class="lantern-body">
+                <div class="lantern-light"></div>
+            </div>
+        </div>
+        <div class="lantern l2">
+            <div class="lantern-body">
+                <div class="lantern-light"></div>
+            </div>
+        </div>
+        <div class="lantern l3">
+            <div class="lantern-body">
+                <div class="lantern-light"></div>
+            </div>
+        </div>
+    </div>
+
+    <audio id="bg-music" loop>
+        <source src="ramadhan.mp3"
+            type="audio/mpeg">
+    </audio>
+
+    <div id="music-toggle" onclick="toggleAudio(event)" class="hover-target">
+        <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none"
+            stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+            <path d="M9 18V5l12-2v13"></path>
+            <circle cx="6" cy="18" r="3"></circle>
+            <circle cx="18" cy="16" r="3"></circle>
+        </svg>
+    </div>
+
+    <div class="container tilt-card" id="tilt-container">
+        <div class="glitch-wrapper">
+            <h1 class="glitch-text" data-text="RAMADHAN NI BOSS">RAMADHAN NI BOSS</h1>
+        </div>
+        <div class="arabic-title">رمضان كريم</div>
+
+        <div class="countdown-frame">
+            <div class="countdown-wrapper hover-target">
+                <div class="time-box">
+                    <span class="time-val" id="d">00</span>
+                    <span class="time-label">HARI</span>
+                </div>
+                <span class="separator">:</span>
+                <div class="time-box">
+                    <span class="time-val" id="h">00</span>
+                    <span class="time-label">JAM</span>
+                </div>
+                <span class="separator">:</span>
+                <div class="time-box">
+                    <span class="time-val" id="m">00</span>
+                    <span class="time-label">MENIT</span>
+                </div>
+                <span class="separator">:</span>
+                <div class="time-box">
+                    <span class="time-val" id="s">00</span>
+                    <span class="time-label">DETIK</span>
+                </div>
+            </div>
+        </div>
+
+        <div class="dynamic-status" id="status-text">
+            MENUNGGU BEDUG MAGHRIB...
+        </div>
+
+        <div class="quote-box">
+            <p id="typing-text">"Ngoding mah tetep jalan, ibadah jangan sampe ketinggalan. Puasa bukan alasan buat AFK
+                dari pahala."</p>
+        </div>
+    </div>
+
+    <script>
+        const cursorRing = document.getElementById('cursor-ring');
+        const cursorDot = document.getElementById('cursor-dot');
+
+        let mouseX = 0, mouseY = 0;
+        let ringX = 0, ringY = 0;
+        let dotX = 0, dotY = 0;
+
+        document.addEventListener('mousemove', (e) => {
+            mouseX = e.clientX;
+            mouseY = e.clientY;
+        });
+
+        const hoverTargets = document.querySelectorAll('a, button, .hover-target, .time-box');
+        hoverTargets.forEach(el => {
+            el.addEventListener('mouseenter', () => cursorRing.classList.add('hovered'));
+            el.addEventListener('mouseleave', () => cursorRing.classList.remove('hovered'));
+        });
+
+        function animateCursor() {
+            ringX += (mouseX - ringX) * 0.15;
+            ringY += (mouseY - ringY) * 0.15;
+
+            dotX += (mouseX - dotX) * 0.5;
+            dotY += (mouseY - dotY) * 0.5;
+
+            cursorRing.style.left = `${ringX}px`;
+            cursorRing.style.top = `${ringY}px`;
+            cursorDot.style.left = `${dotX}px`;
+            cursorDot.style.top = `${dotY}px`;
+
+            requestAnimationFrame(animateCursor);
+        }
+        animateCursor();
+
+        const container = document.getElementById('tilt-container');
+        document.addEventListener('mousemove', (e) => {
+            const xAxis = (window.innerWidth / 2 - e.pageX) / 25;
+            const yAxis = (window.innerHeight / 2 - e.pageY) / 25;
+            container.style.transform = `rotateY(${xAxis}deg) rotateX(${yAxis}deg)`;
+        });
+
+        const statusText = document.getElementById('status-text');
+
+        setInterval(() => {
+            const hour = new Date().getHours();
+            let status = "SISTEM ONLINE";
+            if (hour >= 3 && hour < 5) status = "SAHUR KUY, ISI BENSIN DULU";
+            else if (hour >= 5 && hour < 15) status = "MODE PUASA: ON (TAHAN EMOSI)";
+            else if (hour >= 15 && hour < 18) status = "BENTAR LAGI BUKA, SABAR";
+            else if (hour >= 18 && hour < 19) status = "WAKTUNYA BERBUKA! SERBU TAKJIL!";
+            else if (hour >= 19 && hour < 22) status = "TARAWEH DULU BIAR GANTENG";
+            else status = "BEGADANG SAMBIL NGE-PUSH RANK";
+
+            statusText.innerText = status;
+        }, 1000);
+
+        const quoteBox = document.getElementById('typing-text');
+        const originalQuote = quoteBox.innerText;
+        quoteBox.addEventListener('mouseover', () => {
+            quoteBox.innerText = "System.err.println('404 PERUT KOSONG');";
+        });
+        quoteBox.addEventListener('mouseleave', () => {
+            quoteBox.innerText = originalQuote;
+        });
+
+        const audio = document.getElementById("bg-music");
+        const toggleBtn = document.getElementById("music-toggle");
+        let isPlaying = false;
+
+        function playAudio() {
+            if (!isPlaying) {
+                audio.volume = 0.4;
+                audio.play().then(() => {
+                    isPlaying = true;
+                    toggleBtn.innerHTML = '<svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="6" y="4" width="4" height="16"></rect><rect x="14" y="4" width="4" height="16"></rect></svg>';
+                }).catch(e => { });
+            }
+        }
+
+        function toggleAudio(e) {
+            e.stopPropagation();
+            if (isPlaying) {
+                audio.pause();
+                isPlaying = false;
+                toggleBtn.innerHTML = '<svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polygon points="11 5 6 9 2 9 2 15 6 15 11 19 11 5"></polygon><line x1="23" y1="9" x2="17" y2="15"></line><line x1="17" y1="9" x2="23" y2="15"></line></svg>';
+            } else {
+                playAudio();
+            }
+        }
+        window.addEventListener('load', playAudio);
+
+        const canvas = document.getElementById('bg-canvas');
+        const ctx = canvas.getContext('2d');
+        let width, height;
+        let particles = [];
+        const particleCount = 60;
+
+        function resize() {
+            width = canvas.width = window.innerWidth;
+            height = canvas.height = window.innerHeight;
+        }
+
+        class Particle {
+            constructor() {
+                this.x = Math.random() * width;
+                this.y = Math.random() * height;
+                this.vx = (Math.random() - 0.5) * 0.5;
+                this.vy = (Math.random() - 0.5) * 0.5;
+                this.size = Math.random() * 2;
+                this.alpha = Math.random() * 0.5 + 0.1;
+                this.growing = Math.random() > 0.5;
+            }
+            update() {
+                this.x += this.vx;
+                this.y += this.vy;
+                if (this.x < 0) this.x = width;
+                if (this.x > width) this.x = 0;
+                if (this.y < 0) this.y = height;
+                if (this.y > height) this.y = 0;
+
+                if (this.growing) {
+                    this.alpha += 0.005;
+                    if (this.alpha >= 0.8) this.growing = false;
+                } else {
+                    this.alpha -= 0.005;
+                    if (this.alpha <= 0.1) this.growing = true;
+                }
+            }
+            draw() {
+                ctx.fillStyle = `rgba(0, 255, 153, ${this.alpha})`;
+                ctx.beginPath();
+                ctx.arc(this.x, this.y, this.size, 0, Math.PI * 2);
+                ctx.fill();
+            }
+        }
+
+        function initParticles() {
+            particles = [];
+            for (let i = 0; i < particleCount; i++) {
+                particles.push(new Particle());
+            }
+        }
+
+        function animateParticles() {
+            ctx.clearRect(0, 0, width, height);
+            particles.forEach(p => { p.update(); p.draw(); });
+            particles.forEach((p1, i) => {
+                for (let j = i + 1; j < particles.length; j++) {
+                    const p2 = particles[j];
+                    const dx = p1.x - p2.x;
+                    const dy = p1.y - p2.y;
+                    const dist = Math.sqrt(dx * dx + dy * dy);
+                    if (dist < 100) {
+                        ctx.strokeStyle = `rgba(0, 255, 153, ${0.1 - dist / 1000})`;
+                        ctx.lineWidth = 0.5;
+                        ctx.beginPath();
+                        ctx.moveTo(p1.x, p1.y);
+                        ctx.lineTo(p2.x, p2.y);
+                        ctx.stroke();
+                    }
+                }
+            });
+            requestAnimationFrame(animateParticles);
+        }
+
+        window.addEventListener('resize', resize);
+        resize();
+        initParticles();
+        animateParticles();
+
+        const target = new Date("March 20, 2026 00:00:00").getTime();
+        function tick() {
+            const now = new Date().getTime();
+            const diff = target - now;
+            if (diff < 0) return;
+            document.getElementById('d').innerText = String(Math.floor(diff / (1000 * 60 * 60 * 24))).padStart(2, '0');
+            document.getElementById('h').innerText = String(Math.floor((diff % (1000 * 60 * 60 * 24)) / (1000 * 60 * 60))).padStart(2, '0');
+            document.getElementById('m').innerText = String(Math.floor((diff % (1000 * 60 * 60)) / (1000 * 60))).padStart(2, '0');
+            document.getElementById('s').innerText = String(Math.floor((diff % (1000 * 60)) / 1000)).padStart(2, '0');
+        }
+        setInterval(tick, 1000);
+        tick();
+    </script>
+</body>
+
+</html>

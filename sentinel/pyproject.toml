@@ -1,0 +1,36 @@
+[build-system]
+requires = ["setuptools>=61.0", "wheel"]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "sentinel-ai-cli"
+version = "1.0.4"
+description = "Professional Python Cybersecurity CLI Tool (Sentinel AI CLI)"
+authors = [
+    { name = "Muhammad Dhiyaul Atha", email = "mdhyaulatha@gmail.com" },
+]
+license = {text = "MIT"}
+readme = "README.md"
+requires-python = ">=3.7"
+dependencies = [
+    "psutil",
+    "colorama",
+    "autopep8"
+]
+keywords = ["cybersecurity", "cli", "network", "security", "linux"]
+classifiers = [
+    "Programming Language :: Python :: 3",
+    "License :: OSI Approved :: MIT License",
+    "Operating System :: POSIX :: Linux",
+    "Intended Audience :: Developers",
+    "Intended Audience :: Information Technology",
+    "Topic :: Security",
+    "Topic :: System :: Networking :: Monitoring"
+]
+
+[project.urls]
+Homepage = "https://github.com/Bangkah/sentinel"
+Issues = "https://github.com/Bangkah/sentinel/issues"
+
+[project.scripts]
+sentinel-ai = "sentinel_ai:main"

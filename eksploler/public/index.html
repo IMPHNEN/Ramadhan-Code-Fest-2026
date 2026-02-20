@@ -1,0 +1,1390 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Home Analyzer - Web Interface</title>
+  <!-- Tailwind CSS CDN dengan Dark Mode -->
+  <script src="https://cdn.tailwindcss.com"></script>
+  <!-- Font Awesome untuk ikon -->
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+  <style>
+    /* Dark Mode & Glass Morphism */
+    @layer utilities {
+      .glass {
+        background: rgba(255, 255, 255, 0.1);
+        backdrop-filter: blur(10px);
+        border: 1px solid rgba(255, 255, 255, 0.2);
+      }
+      .glass-dark {
+        background: rgba(17, 24, 39, 0.8);
+        backdrop-filter: blur(10px);
+        border: 1px solid rgba(255, 255, 255, 0.1);
+      }
+      .glass-darker {
+        background: rgba(11, 15, 25, 0.9);
+        backdrop-filter: blur(15px);
+        border: 1px solid rgba(255, 255, 255, 0.15);
+      }
+      .gradient-glow {
+        background: linear-gradient(135deg, #8b5cf6 0%, #06b6d4 100%);
+      }
+      .gradient-btn {
+        background: linear-gradient(135deg, #8b5cf6 0%, #06b6d4 100%);
+        transition: all 0.3s ease;
+      }
+      .gradient-btn:hover {
+        box-shadow: 0 8px 20px rgba(139, 92, 246, 0.4);
+      }
+      .custom-shadow {
+        box-shadow: 0 8px 32px rgba(0, 0, 0, 0.3);
+      }
+      .player-shadow {
+        box-shadow: 0 8px 32px rgba(0, 0, 0, 0.5);
+      }
+      .hover-lift {
+        transition: all 0.2s ease;
+      }
+      .hover-lift:hover {
+        box-shadow: 0 8px 24px rgba(139, 92, 246, 0.3);
+      }
+      .scrollbar-thin::-webkit-scrollbar {
+        width: 6px;
+      }
+      .scrollbar-thin::-webkit-scrollbar-track {
+        background: rgba(255, 255, 255, 0.1);
+        border-radius: 3px;
+      }
+      .scrollbar-thin::-webkit-scrollbar-thumb {
+        background: rgba(139, 92, 246, 0.4);
+        border-radius: 3px;
+      }
+      .scrollbar-thin::-webkit-scrollbar-thumb:hover {
+        background: rgba(139, 92, 246, 0.6);
+      }
+      /* Animasi untuk popup - gentle fade tanpa transform */
+      @keyframes fadeIn {
+        from { opacity: 0; }
+        to { opacity: 1; }
+      }
+      @keyframes fadeOut {
+        from { opacity: 1; }
+        to { opacity: 0; }
+      }
+      .animate-fadeIn {
+        animation: fadeIn 0.2s ease-out;
+      }
+      .animate-fadeOut {
+        animation: fadeOut 0.2s ease-out;
+      }
+      /* Progress bar styling */
+      .progress-bar {
+        -webkit-appearance: none;
+        appearance: none;
+        height: 6px;
+        border-radius: 3px;
+        background: rgba(255, 255, 255, 0.2);
+        outline: none;
+      }
+      .progress-bar::-webkit-slider-thumb {
+        -webkit-appearance: none;
+        appearance: none;
+        width: 16px;
+        height: 16px;
+        border-radius: 50%;
+        background: #8b5cf6;
+        cursor: pointer;
+        transition: all 0.2s;
+      }
+      .progress-bar::-webkit-slider-thumb:hover {
+        background: #06b6d4;
+      }
+      /* Volume bar styling */
+      .volume-bar {
+        -webkit-appearance: none;
+        appearance: none;
+        height: 4px;
+        border-radius: 2px;
+        background: rgba(255, 255, 255, 0.2);
+        outline: none;
+      }
+      .volume-bar::-webkit-slider-thumb {
+        -webkit-appearance: none;
+        appearance: none;
+        width: 12px;
+        height: 12px;
+        border-radius: 50%;
+        background: #8b5cf6;
+        cursor: pointer;
+      }
+    }
+  </style>
+</head>
+<body class="dark bg-gradient-to-br from-gray-900 via-gray-800 to-gray-900 min-h-screen text-gray-100 p-3 md:p-4">
+  <div class="max-w-7xl mx-auto glass-darker rounded-2xl custom-shadow overflow-hidden">
+    <!-- Header -->
+    <header class="gradient-glow text-white px-6 py-8 md:p-8 text-center">
+      <h1 class="text-4xl md:text-5xl font-bold mb-2 bg-gradient-to-r from-violet-300 to-cyan-300 bg-clip-text text-transparent">📊 Home Analyzer</h1>
+      <p class="text-lg md:text-xl opacity-80 text-gray-200">Analisis Isi Home Directory - Web Interface</p>
+    </header>
+
+    <!-- Controls Section -->
+    <div class="p-4 md:p-6 glass border-b border-gray-700 flex flex-wrap gap-3 md:gap-4 items-start">
+      <!-- Path Input -->
+      <div class="flex flex-col space-y-1 min-w-[200px] flex-1">
+        <label class="text-xs font-semibold text-gray-300 uppercase tracking-wider">Path</label>
+        <input type="text" id="path" placeholder="/home/username" value="" 
+               class="px-4 py-2 bg-gray-800 bg-opacity-50 border border-gray-600 rounded-lg text-sm focus:outline-none focus:border-violet-500 focus:ring-2 focus:ring-violet-500 focus:ring-opacity-30 text-gray-100 placeholder-gray-500">
+      </div>
+
+      <!-- Sort By -->
+      <div class="flex flex-col space-y-1 min-w-[140px]">
+        <label class="text-xs font-semibold text-gray-300 uppercase tracking-wider">Sort By</label>
+        <select id="sortBy" 
+                class="px-4 py-2 bg-gray-800 bg-opacity-50 border border-gray-600 rounded-lg text-sm focus:outline-none focus:border-violet-500 focus:ring-2 focus:ring-violet-500 focus:ring-opacity-30 text-gray-100">
+          <option value="name">Name</option>
+          <option value="size">Size</option>
+          <option value="modified">Modified</option>
+          <option value="type">Type</option>
+        </select>
+      </div>
+
+      <!-- Order -->
+      <div class="flex flex-col space-y-1 min-w-[140px]">
+        <label class="text-xs font-semibold text-gray-300 uppercase tracking-wider">Order</label>
+        <select id="order" 
+                class="px-4 py-2 bg-gray-800 bg-opacity-50 border border-gray-600 rounded-lg text-sm focus:outline-none focus:border-violet-500 focus:ring-2 focus:ring-violet-500 focus:ring-opacity-30 text-gray-100">
+          <option value="asc">Ascending</option>
+          <option value="desc">Descending</option>
+        </select>
+      </div>
+
+      <!-- Filter -->
+      <div class="flex flex-col space-y-1 min-w-[180px]">
+        <label class="text-xs font-semibold text-gray-300 uppercase tracking-wider">Filter</label>
+        <input type="text" id="filter" placeholder="Filter by name..."
+               class="px-4 py-2 bg-gray-800 bg-opacity-50 border border-gray-600 rounded-lg text-sm focus:outline-none focus:border-violet-500 focus:ring-2 focus:ring-violet-500 focus:ring-opacity-30 text-gray-100 placeholder-gray-500">
+      </div>
+
+      <!-- Depth -->
+      <div class="flex flex-col space-y-1 min-w-[110px]">
+        <label class="text-xs font-semibold text-gray-300 uppercase tracking-wider">Depth</label>
+        <input type="number" id="depth" min="1" max="10" value="1"
+               class="px-4 py-2 bg-gray-800 bg-opacity-50 border border-gray-600 rounded-lg text-sm focus:outline-none focus:border-violet-500 focus:ring-2 focus:ring-violet-500 focus:ring-opacity-30 text-gray-100">
+      </div>
+
+      <!-- Checkboxes -->
+      <div class="flex flex-col space-y-2 min-w-[160px]">
+        <div class="flex items-center space-x-2">
+          <input type="checkbox" id="all" class="w-4 h-4 bg-gray-700 border-gray-600 rounded text-violet-500 focus:ring-violet-500">
+          <label class="text-sm text-gray-300 cursor-pointer">Show Hidden</label>
+        </div>
+        <div class="flex items-center space-x-2">
+          <input type="checkbox" id="long" class="w-4 h-4 bg-gray-700 border-gray-600 rounded text-violet-500 focus:ring-violet-500">
+          <label class="text-sm text-gray-300 cursor-pointer">Long Format</label>
+        </div>
+        <div class="flex items-center space-x-2">
+          <input type="checkbox" id="recursive" class="w-4 h-4 bg-gray-700 border-gray-600 rounded text-violet-500 focus:ring-violet-500">
+          <label class="text-sm text-gray-300 cursor-pointer">Recursive</label>
+        </div>
+      </div>
+
+      <!-- View Switcher -->
+      <div class="flex flex-col space-y-1">
+        <label class="text-xs font-semibold text-gray-300 uppercase tracking-wider">View</label>
+        <div class="flex space-x-1">
+          <button class="view-btn px-3 py-2 gradient-glow text-white rounded-lg text-sm font-medium transition-all" 
+                  onclick="setView('list')" title="List View">📋</button>
+          <button class="view-btn px-3 py-2 glass text-gray-300 rounded-lg text-sm font-medium hover:text-white transition-all" 
+                  onclick="setView('icons')" title="Icon View">🖼️</button>
+          <button class="view-btn px-3 py-2 glass text-gray-300 rounded-lg text-sm font-medium hover:text-white transition-all" 
+                  onclick="setView('compact')" title="Compact View">📑</button>
+        </div>
+      </div>
+
+      <!-- Action Buttons -->
+      <div class="flex space-x-2 flex-wrap gap-2">
+        <button id="uploadBtn" class="px-3 py-2 glass text-cyan-400 rounded-lg hover:text-cyan-300 transition-colors" title="Upload File">
+          <i class="fas fa-upload"></i>
+        </button>
+        <button onclick="goBack()" 
+                class="px-4 py-2 glass text-gray-300 rounded-lg text-sm font-semibold hover:text-white hover:border-gray-500 transition-all">
+          Back
+        </button>
+        <button onclick="loadFiles()" 
+                class="gradient-btn px-4 py-2 text-white rounded-lg text-sm font-semibold hover-lift">
+          Analyze
+        </button>
+      </div>
+    </div>
+
+    <!-- Stats Bar -->
+    <div class="p-4 md:p-6 glass hidden border-b border-gray-700" id="stats">
+      <div class="flex flex-wrap justify-around gap-4 md:gap-8">
+        <div class="text-center">
+          <div class="text-2xl md:text-3xl font-bold bg-gradient-to-r from-violet-400 to-cyan-400 bg-clip-text text-transparent" id="totalFiles">0</div>
+          <div class="text-sm text-gray-400 mt-1">Files</div>
+        </div>
+        <div class="text-center">
+          <div class="text-2xl md:text-3xl font-bold bg-gradient-to-r from-violet-400 to-cyan-400 bg-clip-text text-transparent" id="totalDirs">0</div>
+          <div class="text-sm text-gray-400 mt-1">Directories</div>
+        </div>
+        <div class="text-center">
+          <div class="text-2xl md:text-3xl font-bold bg-gradient-to-r from-violet-400 to-cyan-400 bg-clip-text text-transparent" id="totalSize">0 B</div>
+          <div class="text-sm text-gray-400 mt-1">Total Size</div>
+        </div>
+        <div class="text-center">
+          <div class="text-2xl md:text-3xl font-bold bg-gradient-to-r from-violet-400 to-cyan-400 bg-clip-text text-transparent" id="hiddenFiles">0</div>
+          <div class="text-sm text-gray-400 mt-1">Hidden</div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Content Area -->
+    <div class="p-4 md:p-6">
+      <!-- Loading State -->
+      <div id="loading" class="hidden text-center py-10">
+        <div class="inline-block">
+          <div class="w-8 h-8 border-4 border-gray-700 border-t-violet-500 rounded-full animate-spin mb-4"></div>
+        </div>
+        <div class="text-lg text-gray-400">Loading...</div>
+        <div class="text-sm text-gray-500 mt-2">Analyzing directory contents</div>
+      </div>
+
+      <!-- Error State -->
+      <div id="error" class="hidden glass border-l-4 border-red-500 text-red-300 p-4 rounded mb-4">
+        Error message will appear here
+      </div>
+
+      <!-- Empty State -->
+      <div id="empty" class="hidden text-center py-10 text-gray-400">
+        No files found. Try adjusting your filters.
+      </div>
+
+      <!-- File List Container -->
+      <div id="fileList" class="space-y-2"></div>
+    </div>
+  </div>
+
+  <!-- Player Popup Overlay -->
+  <div id="playerOverlay" class="fixed inset-0 bg-black bg-opacity-60 backdrop-blur-sm z-50 hidden flex items-center justify-center p-2">
+    <!-- Player Container -->
+    <div id="playerContainer" class="glass-darker rounded-2xl player-shadow w-full max-w-sm overflow-y-auto max-h-screen animate-fadeIn">
+      <!-- Player Header -->
+      <div class="flex justify-between items-center p-3 glass border-b border-gray-700">
+        <div class="flex items-center space-x-2 min-w-0">
+          <div id="playerIcon" class="text-xl flex-shrink-0">
+            <i class="fas fa-music text-cyan-400"></i>
+          </div>
+          <div class="min-w-0">
+            <h3 id="playerTitle" class="text-sm font-semibold text-white truncate">Now Playing</h3>
+            <p id="playerSubtitle" class="text-xs text-gray-400 truncate">Select a file to play</p>
+          </div>
+        </div>
+        <button id="closePlayer" class="text-gray-400 hover:text-white text-xl p-1 flex-shrink-0">
+          <i class="fas fa-times"></i>
+        </button>
+      </div>
+
+      <!-- Player Content -->
+      <div class="p-3">
+        <!-- Video Player -->
+        <div id="videoPlayer" class="hidden mb-3">
+          <video id="videoElement" class="w-full max-h-48 rounded-lg bg-black" controls>
+            Your browser does not support the video tag.
+          </video>
+        </div>
+
+        <!-- Audio Player -->
+        <div id="audioPlayer" class="hidden">
+          <!-- Album Art / Audio Visualization -->
+          <div class="flex flex-col items-center mb-3">
+            <div id="albumArt" class="w-20 h-20 rounded-full gradient-glow flex items-center justify-center mb-2 shadow-lg">
+              <i class="fas fa-music text-white text-xl"></i>
+            </div>
+            <div class="text-center">
+              <h4 id="audioTitle" class="text-sm font-bold text-white mb-1">Audio Title</h4>
+              <p id="audioArtist" class="text-xs text-gray-400">Artist Name</p>
+            </div>
+          </div>
+
+          <!-- Progress Bar -->
+          <div class="mb-2">
+            <div class="flex justify-between text-xs text-gray-400 mb-2">
+              <span id="currentTime">0:00</span>
+              <span id="totalTime">0:00</span>
+            </div>
+            <input type="range" id="progressBar" class="progress-bar w-full" min="0" max="100" value="0">
+          </div>
+        </div>
+
+        <!-- Player Controls -->
+        <div class="flex flex-col items-center">
+          <!-- Control Buttons -->
+          <div class="flex items-center justify-center space-x-4 mb-3">
+            <button id="prevBtn" class="text-gray-400 hover:text-white text-lg p-1 transition-colors">
+              <i class="fas fa-step-backward"></i>
+            </button>
+            <button id="playPauseBtn" class="gradient-glow text-white rounded-full w-12 h-12 flex items-center justify-center text-lg shadow-lg">
+              <i class="fas fa-play"></i>
+            </button>
+            <button id="nextBtn" class="text-gray-400 hover:text-white text-lg p-1 transition-colors">
+              <i class="fas fa-step-forward"></i>
+            </button>
+          </div>
+
+          <!-- Volume Control -->
+          <div class="flex items-center space-x-2 w-full mt-2">
+            <button id="muteBtn" class="text-gray-400 hover:text-white text-base flex-shrink-0">
+              <i class="fas fa-volume-up"></i>
+            </button>
+            <input type="range" id="volumeBar" class="volume-bar flex-1" min="0" max="100" value="80">
+            <span id="volumeText" class="text-gray-400 text-xs w-6 text-right">80%</span>
+          </div>
+
+          <!-- Playback Speed -->
+          <div class="mt-2 flex items-center space-x-2">
+            <span class="text-gray-400 text-xs">Speed:</span>
+            <div class="flex space-x-2">
+              <button data-speed="0.5" class="playback-speed-btn px-2 py-1 text-xs rounded glass text-gray-400 hover:text-white transition-colors">0.5x</button>
+              <button data-speed="1" class="playback-speed-btn px-2 py-1 text-xs rounded gradient-glow text-white">1x</button>
+              <button data-speed="1.5" class="playback-speed-btn px-2 py-1 text-xs rounded glass text-gray-400 hover:text-white transition-colors">1.5x</button>
+              <button data-speed="2" class="playback-speed-btn px-2 py-1 text-xs rounded glass text-gray-400 hover:text-white transition-colors">2x</button>
+            </div>
+          </div>
+
+          <!-- Playlist -->
+          <div id="playlistSection" class="mt-3 w-full">
+            <div class="flex justify-between items-center mb-2">
+              <h5 class="text-sm font-semibold text-white">Playlist</h5>
+              <button id="shuffleBtn" class="text-xs text-gray-400 hover:text-white px-3 py-1 rounded glass transition-colors">
+                <i class="fas fa-random mr-1"></i> Shuffle
+              </button>
+            </div>
+            <div id="playlist" class="max-h-32 overflow-y-auto scrollbar-thin">
+              <!-- Playlist items will be added here dynamically -->
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Image Viewer Modal -->
+  <div id="imageViewerOverlay" class="fixed inset-0 bg-black bg-opacity-80 backdrop-blur-sm z-50 hidden flex items-center justify-center p-2">
+    <div class="relative max-w-xl max-h-screen">
+      <button id="closeImageViewer" class="absolute -top-8 right-0 text-white text-xl hover:text-gray-300 transition-colors">
+        <i class="fas fa-times"></i>
+      </button>
+      <img id="imageElement" class="max-w-full max-h-screen object-contain rounded-2xl" alt="Preview Image">
+      <div class="absolute bottom-2 left-1/2 transform -translate-x-1/2 glass px-3 py-1 rounded-lg">
+        <p id="imageTitle" class="text-xs text-white truncate max-w-xs"></p>
+      </div>
+    </div>
+  </div>
+
+  <!-- Upload Modal -->
+  <div id="uploadOverlay" class="fixed inset-0 bg-black bg-opacity-60 backdrop-blur-sm z-50 hidden flex items-center justify-center p-2">
+    <div class="max-w-sm mx-auto glass-darker rounded-2xl custom-shadow overflow-hidden animate-fadeIn">
+      <div class="gradient-glow text-white p-4">
+        <h2 class="text-lg font-bold">Upload File</h2>
+        <p class="opacity-80 mt-1 text-xs">Upload file ke direktori saat ini</p>
+      </div>
+      <div class="p-4">
+        <form id="uploadForm" class="space-y-3">
+          <div>
+            <label class="block text-xs font-semibold text-gray-300 mb-1">File</label>
+            <input type="file" id="uploadFile" multiple required
+                   class="w-full px-3 py-1 bg-gray-800 bg-opacity-50 border border-gray-600 rounded focus:outline-none focus:border-violet-500 file:mr-3 file:py-1 file:px-3 file:rounded-full file:border-0 file:text-xs file:font-semibold file:bg-violet-600 file:text-white hover:file:bg-violet-700 text-gray-400 text-sm">
+          </div>
+          <div>
+            <label class="block text-xs font-semibold text-gray-300 mb-1">Destination Path</label>
+            <input type="text" id="uploadPath" required
+                   class="w-full px-3 py-1 bg-gray-800 bg-opacity-50 border border-gray-600 rounded text-xs focus:outline-none focus:border-violet-500 text-gray-100 placeholder-gray-500"
+                   placeholder="/path/to/destination">
+            <p class="text-xs text-gray-500 mt-0.5">Path relatif terhadap root direktori</p>
+          </div>
+          <div id="uploadProgress" class="hidden">
+            <label class="block text-xs font-semibold text-gray-300 mb-1">Progress</label>
+            <div class="w-full bg-gray-700 rounded-full h-1">
+              <div id="progressBarFill" class="gradient-glow h-1 rounded-full transition-all duration-300" style="width: 0%"></div>
+            </div>
+            <p id="progressText" class="text-xs text-gray-400 mt-0.5">0%</p>
+          </div>
+          <div id="uploadError" class="hidden glass border-l-4 border-red-500 text-red-300 p-3 rounded text-xs"></div>
+          <div class="flex justify-end space-x-2 pt-3">
+            <button type="button" id="cancelUpload" class="px-3 py-1 glass text-gray-300 rounded text-xs font-semibold hover:text-white transition-all">
+              Cancel
+            </button>
+            <button type="submit" class="gradient-btn px-3 py-1 text-white rounded text-xs font-semibold">
+              <i class="fas fa-upload mr-1"></i>Upload
+            </button>
+          </div>
+        </form>
+      </div>
+    </div>
+  </div>
+
+    <script>
+    // Auto-detect API base URL based on current domain
+    const API_BASE = window.location.origin;
+
+    // Player state
+    let currentView = localStorage.getItem('viewMode') || 'list';
+    let currentPath = localStorage.getItem('currentPath') || '';
+    let currentMediaFiles = [];
+    let currentPlaylist = [];
+    let currentPlaylistIndex = -1;
+    let isPlaying = false;
+    let isMuted = false;
+    let playbackSpeed = 1;
+
+    // DOM Elements for Player
+    const playerOverlay = document.getElementById('playerOverlay');
+    const playerContainer = document.getElementById('playerContainer');
+    const closePlayerBtn = document.getElementById('closePlayer');
+    const videoPlayer = document.getElementById('videoPlayer');
+    const videoElement = document.getElementById('videoElement');
+    const audioPlayer = document.getElementById('audioPlayer');
+    const audioTitle = document.getElementById('audioTitle');
+    const audioArtist = document.getElementById('audioArtist');
+    const currentTimeEl = document.getElementById('currentTime');
+    const totalTimeEl = document.getElementById('totalTime');
+    const progressBar = document.getElementById('progressBar');
+    const playPauseBtn = document.getElementById('playPauseBtn');
+    const prevBtn = document.getElementById('prevBtn');
+    const nextBtn = document.getElementById('nextBtn');
+    const muteBtn = document.getElementById('muteBtn');
+    const volumeBar = document.getElementById('volumeBar');
+    const volumeText = document.getElementById('volumeText');
+    const playlistElement = document.getElementById('playlist');
+    const shuffleBtn = document.getElementById('shuffleBtn');
+    const playerTitle = document.getElementById('playerTitle');
+    const playerSubtitle = document.getElementById('playerSubtitle');
+    const playerIcon = document.getElementById('playerIcon');
+
+    // Player functions
+    function formatTime(seconds) {
+      const mins = Math.floor(seconds / 60);
+      const secs = Math.floor(seconds % 60);
+      return `${mins}:${secs < 10 ? '0' : ''}${secs}`;
+    }
+
+    function openPlayer(mediaFiles, startIndex = 0) {
+      currentPlaylist = mediaFiles;
+      currentPlaylistIndex = startIndex;
+      
+      // Show player
+      playerOverlay.classList.remove('hidden');
+      playerContainer.classList.add('animate-fadeIn');
+      
+      // Load and play the selected file
+      loadMedia(currentPlaylistIndex);
+      
+      // Update playlist display
+      updatePlaylist();
+    }
+
+    function closePlayer() {
+      playerContainer.classList.remove('animate-fadeIn');
+      playerContainer.classList.add('animate-fadeOut');
+      
+      setTimeout(() => {
+        playerOverlay.classList.add('hidden');
+        playerContainer.classList.remove('animate-fadeOut');
+        
+        // Pause any playing media
+        if (videoPlayer.style.display !== 'none') {
+          videoElement.pause();
+        }
+        
+        const audioElement = document.getElementById('audioElement');
+        if (audioElement) {
+          audioElement.pause();
+        }
+        
+        isPlaying = false;
+        updatePlayPauseButton();
+      }, 300);
+    }
+
+    function loadMedia(index) {
+      if (index < 0 || index >= currentPlaylist.length) return;
+      
+      currentPlaylistIndex = index;
+      const media = currentPlaylist[index];
+      
+      // Update player info
+      playerTitle.textContent = media.name;
+      playerSubtitle.textContent = `Playing from ${media.path}`;
+      
+      // Check if it's video or audio
+      const isVideo = media.type === 'video';
+      
+      if (isVideo) {
+        // Show video player, hide audio player
+        videoPlayer.classList.remove('hidden');
+        audioPlayer.classList.add('hidden');
+        playerIcon.innerHTML = '<i class="fas fa-video text-purple-400"></i>';
+        
+        // Set video source via HTTP endpoint
+        const encodedPath = encodeURIComponent(media.path);
+        videoElement.src = `/media/${encodedPath}`;
+        videoElement.load();
+        
+        // Update play/pause button based on video state
+        videoElement.onplay = () => {
+          isPlaying = true;
+          updatePlayPauseButton();
+        };
+        
+        videoElement.onpause = () => {
+          isPlaying = false;
+          updatePlayPauseButton();
+        };
+        
+        // Update time display for video
+        videoElement.ontimeupdate = () => {
+          updateProgress(videoElement.currentTime, videoElement.duration);
+        };
+        
+        videoElement.onloadedmetadata = () => {
+          totalTimeEl.textContent = formatTime(videoElement.duration);
+        };
+      } else {
+        // Show audio player, hide video player
+        videoPlayer.classList.add('hidden');
+        audioPlayer.classList.remove('hidden');
+        playerIcon.innerHTML = '<i class="fas fa-music text-purple-400"></i>';
+        
+        // Update audio info
+        audioTitle.textContent = media.name;
+        audioArtist.textContent = `From ${media.path.split('/').pop()}`;
+        
+        // Create or get audio element
+        let audioElement = document.getElementById('audioElement');
+        if (!audioElement) {
+          audioElement = document.createElement('audio');
+          audioElement.id = 'audioElement';
+          audioElement.style.display = 'none';
+          document.body.appendChild(audioElement);
+        }
+        
+        // Set audio source via HTTP endpoint
+        const encodedPath = encodeURIComponent(media.path);
+        audioElement.src = `/media/${encodedPath}`;
+        audioElement.load();
+        
+        // Update time display for audio
+        audioElement.ontimeupdate = () => {
+          updateProgress(audioElement.currentTime, audioElement.duration);
+        };
+        
+        audioElement.onloadedmetadata = () => {
+          totalTimeEl.textContent = formatTime(audioElement.duration);
+        };
+        
+        audioElement.onplay = () => {
+          isPlaying = true;
+          updatePlayPauseButton();
+        };
+        
+        audioElement.onpause = () => {
+          isPlaying = false;
+          updatePlayPauseButton();
+        };
+        
+        audioElement.onended = () => {
+          playNext();
+        };
+      }
+      
+      // Highlight current item in playlist
+      updatePlaylist();
+    }
+
+    function updateProgress(current, duration) {
+      if (duration) {
+        const progressPercent = (current / duration) * 100;
+        progressBar.value = progressPercent;
+        currentTimeEl.textContent = formatTime(current);
+        totalTimeEl.textContent = formatTime(duration);
+      }
+    }
+
+    function updatePlayPauseButton() {
+      const icon = playPauseBtn.querySelector('i');
+      if (isPlaying) {
+        icon.className = 'fas fa-pause';
+      } else {
+        icon.className = 'fas fa-play';
+      }
+    }
+
+    function togglePlayPause() {
+      if (videoPlayer.style.display !== 'none') {
+        // Video player is active
+        if (videoElement.paused) {
+          videoElement.play();
+          isPlaying = true;
+        } else {
+          videoElement.pause();
+          isPlaying = false;
+        }
+      } else {
+        // Audio player is active
+        const audioElement = document.getElementById('audioElement');
+        if (audioElement) {
+          if (audioElement.paused) {
+            audioElement.play();
+            isPlaying = true;
+          } else {
+            audioElement.pause();
+            isPlaying = false;
+          }
+        }
+      }
+      updatePlayPauseButton();
+    }
+
+    function playPrev() {
+      if (currentPlaylistIndex > 0) {
+        loadMedia(currentPlaylistIndex - 1);
+        playMedia();
+      }
+    }
+
+    function playNext() {
+      if (currentPlaylistIndex < currentPlaylist.length - 1) {
+        loadMedia(currentPlaylistIndex + 1);
+        playMedia();
+      }
+    }
+
+    function playMedia() {
+      if (videoPlayer.style.display !== 'none') {
+        videoElement.play();
+      } else {
+        const audioElement = document.getElementById('audioElement');
+        if (audioElement) {
+          audioElement.play();
+        }
+      }
+      isPlaying = true;
+      updatePlayPauseButton();
+    }
+
+    function toggleMute() {
+      isMuted = !isMuted;
+      
+      const icon = muteBtn.querySelector('i');
+      if (isMuted) {
+        icon.className = 'fas fa-volume-mute';
+        volumeBar.value = 0;
+        volumeText.textContent = '0%';
+      } else {
+        icon.className = 'fas fa-volume-up';
+        volumeBar.value = 80;
+        volumeText.textContent = '80%';
+      }
+      
+      // Apply mute to active media
+      if (videoPlayer.style.display !== 'none') {
+        videoElement.muted = isMuted;
+      } else {
+        const audioElement = document.getElementById('audioElement');
+        if (audioElement) {
+          audioElement.muted = isMuted;
+        }
+      }
+    }
+
+    function updateVolume() {
+      const volume = volumeBar.value;
+      volumeText.textContent = `${volume}%`;
+      
+      // Update mute icon
+      const icon = muteBtn.querySelector('i');
+      if (volume == 0) {
+        icon.className = 'fas fa-volume-mute';
+        isMuted = true;
+      } else {
+        icon.className = 'fas fa-volume-up';
+        isMuted = false;
+      }
+      
+      // Apply volume to active media
+      const volumeLevel = volume / 100;
+      if (videoPlayer.style.display !== 'none') {
+        videoElement.volume = volumeLevel;
+        videoElement.muted = isMuted;
+      } else {
+        const audioElement = document.getElementById('audioElement');
+        if (audioElement) {
+          audioElement.volume = volumeLevel;
+          audioElement.muted = isMuted;
+        }
+      }
+    }
+
+    function updatePlaylist() {
+      playlistElement.innerHTML = '';
+      
+      currentPlaylist.forEach((media, index) => {
+        const item = document.createElement('div');
+        item.className = `flex items-center p-3 glass rounded-lg hover:glass-dark cursor-pointer transition-all ${index === currentPlaylistIndex ? 'border-l-2 border-violet-500 bg-opacity-50' : ''}`;
+        item.onclick = () => {
+          loadMedia(index);
+          playMedia();
+        };
+        
+        const icon = media.type === 'video' ? 'fas fa-video' : 'fas fa-music';
+        
+        item.innerHTML = `
+          <div class="flex items-center flex-1 min-w-0">
+            <i class="${icon} text-cyan-400 mr-3 flex-shrink-0"></i>
+            <div class="flex-1 min-w-0">
+              <div class="text-gray-200 truncate text-sm">${media.name}</div>
+              <div class="text-xs text-gray-500 truncate">${media.path}</div>
+            </div>
+          </div>
+          <div class="ml-2 text-xs text-gray-500 flex-shrink-0">
+            ${formatSize(media.size || 0)}
+          </div>
+        `;
+        
+        playlistElement.appendChild(item);
+      });
+    }
+
+    function shufflePlaylist() {
+      // Fisher-Yates shuffle algorithm
+      for (let i = currentPlaylist.length - 1; i > 0; i--) {
+        const j = Math.floor(Math.random() * (i + 1));
+        [currentPlaylist[i], currentPlaylist[j]] = [currentPlaylist[j], currentPlaylist[i]];
+      }
+      
+      // Keep current playing item at the start
+      const currentItem = currentPlaylist[currentPlaylistIndex];
+      if (currentItem) {
+        currentPlaylist = currentPlaylist.filter(item => item !== currentItem);
+        currentPlaylist.unshift(currentItem);
+        currentPlaylistIndex = 0;
+      }
+      
+      updatePlaylist();
+    }
+
+    function setPlaybackSpeed(speed) {
+      playbackSpeed = speed;
+      
+      // Update active buttons
+      document.querySelectorAll('.playback-speed-btn').forEach(btn => {
+        if (parseFloat(btn.dataset.speed) === speed) {
+          btn.className = 'playback-speed-btn px-2 py-1 text-xs rounded gradient-glow text-white';
+        } else {
+          btn.className = 'playback-speed-btn px-2 py-1 text-xs rounded glass text-gray-400 hover:text-white transition-colors';
+        }
+      });
+      
+      // Apply to active media
+      if (videoPlayer.style.display !== 'none') {
+        videoElement.playbackRate = speed;
+      } else {
+        const audioElement = document.getElementById('audioElement');
+        if (audioElement) {
+          audioElement.playbackRate = speed;
+        }
+      }
+    }
+
+    // Event Listeners for Player
+    closePlayerBtn.addEventListener('click', closePlayer);
+    playerOverlay.addEventListener('click', (e) => {
+      if (e.target === playerOverlay) {
+        closePlayer();
+      }
+    });
+
+    // Image Viewer
+    const imageViewerOverlay = document.getElementById('imageViewerOverlay');
+    const imageElement = document.getElementById('imageElement');
+    const imageTitle = document.getElementById('imageTitle');
+    const closeImageViewer = document.getElementById('closeImageViewer');
+
+    function openImageViewer(path, name) {
+      imageElement.src = `/media/${encodeURIComponent(path)}`;
+      imageTitle.textContent = name;
+      imageViewerOverlay.classList.remove('hidden');
+    }
+
+    function closeImageViewerModal() {
+      imageViewerOverlay.classList.add('hidden');
+      imageElement.src = '';
+    }
+
+    closeImageViewer.addEventListener('click', closeImageViewerModal);
+    imageViewerOverlay.addEventListener('click', (e) => {
+      if (e.target === imageViewerOverlay) {
+        closeImageViewerModal();
+      }
+    });
+
+    // Global event listener for image view buttons
+    document.addEventListener('click', (e) => {
+      if (e.target.closest('.view-image-btn')) {
+        const btn = e.target.closest('.view-image-btn');
+        const path = decodeURIComponent(btn.dataset.path);
+        const name = btn.dataset.name;
+        openImageViewer(path, name);
+      }
+    });
+
+    // Upload Modal References
+    const uploadOverlay = document.getElementById('uploadOverlay');
+    const uploadForm = document.getElementById('uploadForm');
+    const uploadFile = document.getElementById('uploadFile');
+    const uploadPath = document.getElementById('uploadPath');
+    const uploadProgress = document.getElementById('uploadProgress');
+    const uploadError = document.getElementById('uploadError');
+    const cancelUpload = document.getElementById('cancelUpload');
+
+    function openUploadModal() {
+      const pathInput = document.getElementById('path');
+      uploadPath.value = pathInput.value || '/';
+      uploadError.classList.add('hidden');
+      uploadProgress.classList.add('hidden');
+      uploadOverlay.classList.remove('hidden');
+    }
+
+    function closeUploadModal() {
+      uploadOverlay.classList.add('hidden');
+      uploadForm.reset();
+      uploadError.classList.add('hidden');
+      uploadProgress.classList.add('hidden');
+    }
+
+    cancelUpload.addEventListener('click', closeUploadModal);
+
+    uploadOverlay.addEventListener('click', (e) => {
+      if (e.target === uploadOverlay) {
+        closeUploadModal();
+      }
+    });
+
+    uploadForm.addEventListener('submit', async (e) => {
+      e.preventDefault();
+      
+      const files = uploadFile.files;
+      const destPath = uploadPath.value.trim();
+      
+      if (files.length === 0) {
+        uploadError.textContent = 'Pilih file untuk diupload';
+        uploadError.classList.remove('hidden');
+        return;
+      }
+      
+      if (!destPath) {
+        uploadError.textContent = 'Tentukan path tujuan';
+        uploadError.classList.remove('hidden');
+        return;
+      }
+      
+      uploadError.classList.add('hidden');
+      uploadProgress.classList.remove('hidden');
+      progressText.textContent = `Mengupload ${files.length} file...`;
+      
+      const formData = new FormData();
+      // Append all files with the same field name 'file[]'
+      for (const file of files) {
+        formData.append('file[]', file);
+      }
+      formData.append('path', destPath);
+      
+      try {
+        const response = await fetch('/api/upload', {
+          method: 'POST',
+          body: formData
+        });
+        
+        if (response.ok) {
+          uploadProgress.classList.add('hidden');
+          closeUploadModal();
+          loadFiles(); // Refresh file list
+        } else {
+          const errorData = await response.json();
+          uploadError.textContent = errorData.error || 'Upload gagal';
+          uploadError.classList.remove('hidden');
+          uploadProgress.classList.add('hidden');
+        }
+      } catch (err) {
+        uploadError.textContent = 'Terjadi kesalahan: ' + err.message;
+        uploadError.classList.remove('hidden');
+        uploadProgress.classList.add('hidden');
+      }
+    });
+
+    // Global event listener for upload button
+    document.addEventListener('click', (e) => {
+      if (e.target.closest('#uploadBtn')) {
+        e.preventDefault();
+        e.stopPropagation();
+        openUploadModal();
+      }
+    });
+
+    // Global event listener for download buttons
+    document.addEventListener('click', (e) => {
+      if (e.target.closest('.download-btn')) {
+        const btn = e.target.closest('.download-btn');
+        e.preventDefault();
+        e.stopPropagation();
+        const path = btn.dataset.path; // already encoded
+        const name = btn.dataset.name;
+        if (path) {
+          // Create a temporary anchor element to trigger download
+          const a = document.createElement('a');
+          a.href = `/download?path=${path}`;
+          a.download = name || '';
+          document.body.appendChild(a);
+          a.click();
+          document.body.removeChild(a);
+        }
+      }
+    });
+
+    playPauseBtn.addEventListener('click', togglePlayPause);
+    prevBtn.addEventListener('click', playPrev);
+    nextBtn.addEventListener('click', playNext);
+    muteBtn.addEventListener('click', toggleMute);
+    volumeBar.addEventListener('input', updateVolume);
+    shuffleBtn.addEventListener('click', shufflePlaylist);
+
+    progressBar.addEventListener('input', (e) => {
+      const percent = e.target.value;
+      
+      if (videoPlayer.style.display !== 'none') {
+        if (videoElement.duration) {
+          videoElement.currentTime = (percent / 100) * videoElement.duration;
+        }
+      } else {
+        const audioElement = document.getElementById('audioElement');
+        if (audioElement && audioElement.duration) {
+          audioElement.currentTime = (percent / 100) * audioElement.duration;
+        }
+      }
+    });
+
+    // Playback speed buttons
+    document.querySelectorAll('.playback-speed-btn').forEach(btn => {
+      btn.addEventListener('click', () => {
+        setPlaybackSpeed(parseFloat(btn.dataset.speed));
+      });
+    });
+
+    // Original functions from your code (with modifications to support media playback)
+    function formatSize(bytes) {
+      if (bytes === 0) return '0 B';
+      const units = ['B', 'KB', 'MB', 'GB', 'TB'];
+      let size = bytes;
+      let unitIndex = 0;
+      while (size >= 1024 && unitIndex < units.length - 1) {
+        size /= 1024;
+        unitIndex++;
+      }
+      return unitIndex === 0 ? `${size} B` : `${size.toFixed(1)} ${units[unitIndex]}`;
+    }
+
+    function formatDate(dateStr) {
+      const date = new Date(dateStr);
+      return date.toLocaleDateString('id-ID', {
+        day: '2-digit',
+        month: '2-digit',
+        year: 'numeric',
+        hour: '2-digit',
+        minute: '2-digit'
+      });
+    }
+
+    function getFileIcon(type, isHidden = false, filename = '') {
+      // Icon Font Awesome berdasarkan ekstensi
+      const ext = filename.split('.').pop().toLowerCase();
+      
+      const specificIcons = {
+        // Images
+        'jpg': 'fas fa-image', 'jpeg': 'fas fa-image', 'png': 'fas fa-image', 'gif': 'fas fa-image', 
+        'bmp': 'fas fa-image', 'svg': 'fas fa-palette', 'webp': 'fas fa-image', 'ico': 'fas fa-image',
+        // Documents
+        'pdf': 'fas fa-file-pdf', 'doc': 'fas fa-file-word', 'docx': 'fas fa-file-word', 
+        'txt': 'fas fa-file-alt', 'rtf': 'fas fa-file-alt', 'odt': 'fas fa-file-word',
+        'xls': 'fas fa-file-excel', 'xlsx': 'fas fa-file-excel', 'csv': 'fas fa-file-csv',
+        'ppt': 'fas fa-file-powerpoint', 'pptx': 'fas fa-file-powerpoint',
+        // Audio
+        'mp3': 'fas fa-music', 'wav': 'fas fa-music', 'ogg': 'fas fa-music', 'flac': 'fas fa-music', 
+        'aac': 'fas fa-music', 'm4a': 'fas fa-music', 'wma': 'fas fa-music',
+        // Video
+        'mp4': 'fas fa-film', 'avi': 'fas fa-film', 'mkv': 'fas fa-film', 'mov': 'fas fa-film', 
+        'wmv': 'fas fa-film', 'flv': 'fas fa-film', 'webm': 'fas fa-film', 'm4v': 'fas fa-film',
+        // Archives
+        'zip': 'fas fa-file-archive', 'rar': 'fas fa-file-archive', 'tar': 'fas fa-file-archive', 
+        'gz': 'fas fa-file-archive', '7z': 'fas fa-file-archive', 'tgz': 'fas fa-file-archive',
+        // Code
+        'js': 'fab fa-js-square', 'jsx': 'fab fa-react', 'ts': 'fab fa-js-square', 'tsx': 'fab fa-react',
+        'py': 'fab fa-python', 'java': 'fab fa-java', 'cpp': 'fas fa-code', 'c': 'fas fa-code',
+        'h': 'fas fa-code', 'hpp': 'fas fa-code',
+        'html': 'fab fa-html5', 'css': 'fab fa-css3-alt', 'scss': 'fab fa-sass', 'sass': 'fab fa-sass',
+        'less': 'fab fa-sass', 'php': 'fab fa-php', 'json': 'fas fa-brackets-curly', 'xml': 'fas fa-file-code',
+        'yaml': 'fas fa-file-code', 'yml': 'fas fa-file-code', 'go': 'fas fa-code', 'rs': 'fas fa-code',
+        'rb': 'fas fa-gem', 'swift': 'fab fa-swift', 'kt': 'fas fa-code', 'sql': 'fas fa-database',
+        'sh': 'fas fa-terminal', 'bash': 'fas fa-terminal', 'zsh': 'fas fa-terminal', 'fish': 'fas fa-terminal',
+        'ps1': 'fas fa-terminal',
+        // Markup & Docs
+        'md': 'fab fa-markdown', 'markdown': 'fab fa-markdown', 'rst': 'fas fa-file-alt', 'tex': 'fas fa-file-alt',
+        'vue': 'fab fa-vuejs', 'svelte': 'fas fa-code', 'astro': 'fas fa-code',
+        // Config & System
+        'env': 'fas fa-cog', 'conf': 'fas fa-cog', 'config': 'fas fa-cog', 'ini': 'fas fa-cog', 
+        'toml': 'fas fa-cog', 'yml': 'fas fa-cog',
+        // Executable
+        'exe': 'fas fa-cog', 'dll': 'fas fa-cog', 'so': 'fas fa-cog', 'app': 'fas fa-cube'
+      };
+      
+      // Cek icon spesifik berdasarkan ekstensi
+      if (specificIcons[ext]) {
+        return specificIcons[ext];
+      }
+      
+      // Fallback ke tipe umum
+      const icons = {
+        'directory': 'fas fa-folder',
+        'symlink': 'fas fa-link',
+        'file': 'fas fa-file',
+        'executable': 'fas fa-cog',
+        'image': 'fas fa-image',
+        'document': 'fas fa-file-alt',
+        'audio': 'fas fa-music',
+        'video': 'fas fa-film',
+        'archive': 'fas fa-file-archive',
+        'code': 'fas fa-code'
+      };
+      
+      return icons[type] || 'fas fa-file';
+    }
+
+    function detectFileType(filename, isDirectory, permissions) {
+      if (isDirectory) return 'directory';
+      
+      const ext = filename.split('.').pop().toLowerCase();
+      const imageExts = ['jpg', 'jpeg', 'png', 'gif', 'bmp', 'svg', 'webp', 'ico', 'tiff'];
+      const docExts = ['pdf', 'doc', 'docx', 'txt', 'rtf', 'odt', 'xls', 'xlsx', 'ppt', 'pptx', 'csv'];
+      const audioExts = ['mp3', 'wav', 'ogg', 'flac', 'aac', 'm4a', 'wma', 'alac', 'aiff'];
+      const videoExts = ['mp4', 'avi', 'mkv', 'mov', 'wmv', 'flv', 'webm', 'm4v', 'mpg', 'mpeg', '3gp', 'mts', 'ts'];
+      const archiveExts = ['zip', 'rar', 'tar', 'gz', '7z', 'bz2', 'xz', 'tgz', 'iso'];
+      const codeExts = ['js', 'jsx', 'ts', 'tsx', 'py', 'java', 'cpp', 'c', 'h', 'hpp', 'html', 'css', 'scss', 'sass', 'less', 'php', 'json', 'xml', 'yaml', 'yml', 'go', 'rs', 'rb', 'swift', 'kt', 'sql', 'sh', 'bash', 'zsh', 'fish', 'ps1', 'md', 'markdown', 'rst', 'tex', 'vue', 'svelte', 'astro'];
+      
+      if (imageExts.includes(ext)) return 'image';
+      if (docExts.includes(ext)) return 'document';
+      if (audioExts.includes(ext)) return 'audio';
+      if (videoExts.includes(ext)) return 'video';
+      if (archiveExts.includes(ext)) return 'archive';
+      if (codeExts.includes(ext)) return 'code';
+      if (permissions && permissions.includes('x')) return 'executable';
+      
+      return 'file';
+    }
+
+    function getParentPath(path) {
+      if (!path || path === '/') return '/';
+      let normalized = path.replace(/\/+$/, '');
+      if (normalized === '') return '/';
+      const lastSlash = normalized.lastIndexOf('/');
+      if (lastSlash <= 0) return '/';
+      return normalized.substring(0, lastSlash) || '/';
+    }
+
+    function goBack() {
+      const pathInput = document.getElementById('path');
+      const parentPath = getParentPath(pathInput.value || currentPath);
+      pathInput.value = parentPath;
+      loadFiles();
+    }
+
+    function setView(view) {
+      currentView = view;
+      localStorage.setItem('viewMode', view);
+      
+      document.querySelectorAll('.view-btn').forEach(btn => {
+        btn.classList.remove('gradient-glow', 'text-white');
+        btn.classList.add('glass', 'text-gray-300', 'hover:text-white');
+      });
+      
+      const activeBtn = document.querySelector(`[onclick="setView('${view}')"]`);
+      if (activeBtn) {
+        activeBtn.classList.remove('glass', 'text-gray-300', 'hover:text-white');
+        activeBtn.classList.add('gradient-glow', 'text-white');
+      }
+      
+      if (document.querySelectorAll('.file-item').length > 0) {
+        renderFiles(JSON.parse(localStorage.getItem('lastFilesData') || '[]'));
+      }
+    }
+
+    function renderFiles(files) {
+      const fileList = document.getElementById('fileList');
+      fileList.innerHTML = '';
+      
+      const long = document.getElementById('long').checked;
+      currentMediaFiles = [];
+      
+      files.forEach(file => {
+        const fileType = detectFileType(file.name, file.isDirectory, file.permissions);
+        const fileIcon = getFileIcon(fileType, file.isHidden, file.name);
+        
+        // Store media files for potential playback
+        if (fileType === 'audio' || fileType === 'video') {
+          currentMediaFiles.push({
+            ...file,
+            type: fileType
+          });
+        }
+        
+        const item = document.createElement('div');
+        
+        if (currentView === 'icons') {
+          item.className = 'file-item inline-block w-1/2 sm:w-1/3 md:w-1/4 lg:w-1/5 xl:w-1/6 p-2';
+          item.innerHTML = `
+            <div class="flex flex-col items-center p-4 glass rounded-xl hover:glass-dark hover:shadow-lg transition-all ${file.isDirectory ? 'cursor-pointer' : ''} ${fileType === 'image' ? 'view-image-btn' : ''}"
+                 ${fileType === 'image' ? `data-path="${encodeURIComponent(file.path)}" data-name="${file.name}"` : ''}>
+              ${fileType === 'image' ?
+                `<img src="/media/${encodeURIComponent(file.path)}" class="w-20 h-20 object-cover rounded-lg mb-2" alt="${file.name}" loading="lazy">` :
+                `<i class="${fileIcon} text-4xl mb-2 text-cyan-400"></i>`}
+              <span class="text-sm font-medium truncate w-full text-center ${file.isHidden ? 'text-gray-500' : 'text-gray-200'}" title="${file.name}">
+                ${file.name}${file.isDirectory ? '/' : ''}
+              </span>
+              <div class="flex gap-2 mt-3 justify-center flex-wrap">
+                ${(fileType === 'audio' || fileType === 'video') ?
+                  `<button class="px-2 py-1 bg-violet-600 bg-opacity-80 text-violet-100 rounded text-xs hover:bg-opacity-100 transition-all play-media-btn" data-index="${currentMediaFiles.length - 1}">
+                    <i class="fas fa-play"></i>
+                  </button>` : ''}
+                ${!file.isDirectory ?
+                  `<button class="px-2 py-1 glass text-cyan-400 rounded text-xs hover:text-cyan-300 transition-all download-btn" data-path="${encodeURIComponent(file.path)}" data-name="${file.name}">
+                    <i class="fas fa-download"></i>
+                  </button>` : ''}
+              </div>
+            </div>
+          `;
+        } else if (currentView === 'compact') {
+          item.className = `file-item flex items-center px-3 py-2 glass rounded-lg hover:glass-dark transition-all ${file.isDirectory ? 'cursor-pointer' : ''}`;
+          item.innerHTML = `
+            <i class="${fileIcon} text-lg mr-3 text-cyan-400"></i>
+            <span class="flex-1 text-sm font-medium truncate ${file.isHidden ? 'text-gray-500' : 'text-gray-200'}">
+              ${file.name}${file.isDirectory ? '/' : ''}
+            </span>
+            ${long ? `
+              <div class="flex space-x-4 text-xs text-gray-400 ml-4">
+                <span>${file.permissions || '---'}</span>
+                <span>${formatSize(file.size || 0)}</span>
+              </div>
+            ` : ''}
+            <div class="flex space-x-2 ml-2">
+              ${(fileType === 'audio' || fileType === 'video') ?
+                `<button class="px-2 py-1 bg-violet-600 bg-opacity-80 text-violet-100 rounded text-xs hover:bg-opacity-100 transition-all play-media-btn" data-index="${currentMediaFiles.length - 1}">
+                  <i class="fas fa-play"></i>
+                </button>` : ''}
+              ${!file.isDirectory ?
+                `<button class="px-2 py-1 glass text-cyan-400 rounded text-xs hover:text-cyan-300 transition-all download-btn" data-path="${encodeURIComponent(file.path)}" data-name="${file.name}">
+                  <i class="fas fa-download"></i>
+                </button>` : ''}
+            </div>
+          `;
+        } else { // list view
+          item.className = `file-item flex items-center px-4 py-3 glass rounded-lg hover:glass-dark transition-all ${file.isDirectory ? 'cursor-pointer' : ''}`;
+          item.innerHTML = `
+            <i class="${fileIcon} text-2xl mr-4 text-cyan-400"></i>
+            <div class="flex-1 min-w-0">
+              <div class="font-medium truncate ${file.isHidden ? 'text-gray-500' : 'text-gray-200'}">
+                ${file.name}${file.isDirectory ? '/' : ''}
+              </div>
+              ${long ? `
+                <div class="flex flex-wrap gap-4 mt-1 text-xs text-gray-400">
+                  <span>${file.permissions || '---'}</span>
+                  <span>${formatSize(file.size || 0)}</span>
+                  <span>${formatDate(file.modified)}</span>
+                </div>
+              ` : ''}
+            </div>
+            <div class="flex space-x-2 ml-4">
+            ${(fileType === 'audio' || fileType === 'video') ?
+              `<button class="px-3 py-2 bg-violet-600 text-white rounded-lg text-sm font-semibold hover:bg-violet-700 transition-all play-media-btn" data-index="${currentMediaFiles.length - 1}">
+                <i class="fas fa-play mr-1"></i> Play
+              </button>` : ''}
+            ${!file.isDirectory ?
+              `<button class="px-3 py-2 glass text-cyan-400 rounded-lg text-sm font-semibold hover:text-cyan-300 transition-all download-btn" data-path="${encodeURIComponent(file.path)}" data-name="${file.name}">
+                <i class="fas fa-download mr-1"></i> Download
+              </button>` : ''}
+            </div>
+          `;
+        }
+        
+        // Add click handler for directories, images, and prevent bubbling for buttons
+        if (file.isDirectory) {
+          item.onclick = (e) => {
+            if (!e.target.closest('.play-media-btn')) {
+              document.getElementById('path').value = file.path;
+              loadFiles();
+            }
+          };
+        } else if (fileType === 'image') {
+          item.onclick = (e) => {
+            if (!e.target.closest('.play-media-btn')) {
+              openImageViewer(file.path, file.name);
+            }
+          };
+        } else if (fileType === 'audio' || fileType === 'video') {
+          item.onclick = (e) => {
+            if (!e.target.closest('.play-media-btn')) {
+              // Let button handle its own click
+            }
+          };
+        }
+        
+        fileList.appendChild(item);
+      });
+      
+      // Add event listeners to play buttons
+      document.querySelectorAll('.play-media-btn').forEach(btn => {
+        btn.addEventListener('click', (e) => {
+          e.stopPropagation();
+          const index = parseInt(btn.dataset.index);
+          if (currentMediaFiles.length > 0) {
+            // Find all media files in current view
+            const mediaFiles = currentMediaFiles.filter(file => 
+              file.type === 'audio' || file.type === 'video'
+            );
+            
+            // Find the correct index in the filtered list
+            const mediaFile = currentMediaFiles[index];
+            const startIndex = mediaFiles.findIndex(file => file.path === mediaFile.path);
+            
+            if (startIndex !== -1) {
+              openPlayer(mediaFiles, startIndex);
+            }
+          }
+        });
+      });
+    }
+
+    async function loadFiles() {
+      const pathInput = document.getElementById('path');
+      const path = pathInput.value || currentPath;
+      currentPath = path;
+      localStorage.setItem('currentPath', path);
+      
+      const params = new URLSearchParams();
+      if (path) params.set('path', path);
+      params.set('sortBy', document.getElementById('sortBy').value);
+      params.set('order', document.getElementById('order').value);
+      params.set('all', document.getElementById('all').checked);
+      params.set('long', document.getElementById('long').checked);
+      params.set('recursive', document.getElementById('recursive').checked);
+      const filter = document.getElementById('filter').value;
+      if (filter) params.set('filter', filter);
+      const depth = document.getElementById('depth').value;
+      if (depth && depth > 1) params.set('depth', depth);
+
+      document.getElementById('loading').classList.remove('hidden');
+      document.getElementById('error').classList.add('hidden');
+      document.getElementById('empty').classList.add('hidden');
+      document.getElementById('fileList').innerHTML = '';
+      document.getElementById('stats').classList.add('hidden');
+
+      try {
+        const response = await fetch(`${API_BASE}/api/files?${params}`);
+        
+        if (!response.ok) {
+          throw new Error(`HTTP ${response.status}: ${response.statusText}`);
+        }
+        
+        const result = await response.json();
+
+        document.getElementById('loading').classList.add('hidden');
+
+        if (!result.success) {
+          throw new Error(result.error || 'Unknown error occurred');
+        }
+
+        const { files, stats } = result.data;
+        localStorage.setItem('lastFilesData', JSON.stringify(files));
+
+        if (files.length === 0) {
+          document.getElementById('empty').classList.remove('hidden');
+          return;
+        }
+
+        // Update stats
+        document.getElementById('totalFiles').textContent = stats.totalFiles || 0;
+        document.getElementById('totalDirs').textContent = stats.totalDirectories || 0;
+        document.getElementById('totalSize').textContent = formatSize(stats.totalSize || 0);
+        document.getElementById('hiddenFiles').textContent = stats.hiddenFiles || 0;
+        document.getElementById('stats').classList.remove('hidden');
+
+        // Render files
+        renderFiles(files);
+
+      } catch (error) {
+        document.getElementById('loading').classList.add('hidden');
+        const errorDiv = document.getElementById('error');
+        errorDiv.textContent = `Error: ${error.message}`;
+        errorDiv.classList.remove('hidden');
+        console.error('Error loading files:', error);
+      }
+    }
+
+    // Add keyboard shortcuts
+    document.addEventListener('keydown', (e) => {
+      // Global shortcuts (when player is not open)
+      if (!playerOverlay.classList.contains('hidden')) {
+        // Player shortcuts
+        switch(e.key) {
+          case ' ':
+            e.preventDefault();
+            togglePlayPause();
+            break;
+          case 'Escape':
+            closePlayer();
+            break;
+          case 'ArrowLeft':
+            if (e.ctrlKey) playPrev();
+            break;
+          case 'ArrowRight':
+            if (e.ctrlKey) playNext();
+            break;
+          case 'm':
+          case 'M':
+            toggleMute();
+            break;
+        }
+      } else {
+        // Main app shortcuts
+        if (e.key === 'Enter' && !e.target.matches('input[type="text"]')) {
+          loadFiles();
+        }
+        if (e.key === 'Escape') {
+          document.getElementById('filter').value = '';
+          loadFiles();
+        }
+      }
+    });
+
+    // Initialize on page load
+    window.onload = () => {
+      const pathInput = document.getElementById('path');
+      if (currentPath) {
+        pathInput.value = currentPath;
+      }
+      
+      setView(currentView);
+      loadFiles();
+    };
+  </script>
+</body>
+</html>
