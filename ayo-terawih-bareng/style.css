@@ -1,0 +1,100 @@
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+  font-family: 'Poppins', sans-serif;
+}
+
+body {
+  height: 100vh;
+  background: linear-gradient(135deg, #1e3c72, #2a5298);
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  overflow: hidden;
+}
+
+.container {
+  text-align: center;
+  background: rgba(255, 255, 255, 0.1);
+  backdrop-filter: blur(10px);
+  padding: 40px;
+  border-radius: 20px;
+  color: white;
+  width: 90%;
+  max-width: 400px;
+  box-shadow: 0 20px 40px rgba(0,0,0,0.3);
+}
+
+h1 {
+  margin-bottom: 20px;
+  font-size: 22px;
+}
+
+.gif {
+  width: 200px;
+  border-radius: 15px;
+  margin-bottom: 20px;
+}
+
+/* ================= BUTTON AREA ================= */
+
+.buttons {
+  position: relative;
+  height: 70px;
+  margin-top: 20px;
+}
+
+/* ================= BUTTON ================= */
+
+button {
+  position: absolute;
+  padding: 12px 28px;
+  border: none;
+  border-radius: 12px;
+  font-size: 16px;
+  font-weight: 600;
+  cursor: pointer;
+  transition: 0.3s ease;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+button:hover {
+  transform: scale(1.05);
+}
+
+/* YES posisi kiri */
+.yes {
+  background: black;
+  color: white;
+  left: 40px;
+  top: 0;
+}
+
+.yes span {
+  color: red;
+}
+
+/* NO posisi kanan */
+.no {
+  background: #ff1744;
+  color: white;
+  right: 40px;
+  top: 0;
+}
+
+.hidden {
+  display: none;
+}
+
+#result {
+  margin-top: 20px;
+  animation: fadeIn 0.5s ease;
+}
+
+@keyframes fadeIn {
+  from { opacity: 0; transform: translateY(10px); }
+  to { opacity: 1; transform: translateY(0); }
+}
