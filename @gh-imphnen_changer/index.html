@@ -4,121 +4,7 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>Malas Changer</title>
-
-<style>
-  body {
-    margin: 0;
-    background: #0f1115;
-    font-family: system-ui, sans-serif;
-    color: #eee;
-  }
-
-  textarea {
-    width: 100vw;
-    height: 100vh;
-    border: none;
-    outline: none;
-    resize: none;
-    padding: 20px;
-    background: #0f1115;
-    color: #eee;
-    font-size: 14px;
-    line-height: 1.6;
-    box-sizing: border-box;
-    padding-bottom: 90px; /* ruang buat navbar */
-  }
-
-  .navbar {
-    position: fixed;
-    bottom: 0;
-    left: 0;
-    width: 100%;
-    display: flex;
-    gap: 10px;
-    padding: 12px;
-    background: #14171d;
-    box-shadow:
-      0 -6px 20px rgba(0,0,0,0.6),
-      inset 0 1px 0 rgba(255,255,255,0.05);
-    box-sizing: border-box;
-  }
-
-  .neo-btn {
-    border: none;
-    border-radius: 14px;
-    padding: 10px 14px;
-    background: #1a1e26;
-    color: #fff;
-    font-size: 14px;
-    cursor: pointer;
-    box-shadow:
-      4px 4px 8px #0b0d11,
-      -4px -4px 8px #1c1f25;
-    transition: 0.15s;
-  }
-
-  .neo-btn:active {
-    box-shadow:
-      inset 4px 4px 8px #0b0d11,
-      inset -4px -4px 8px #1c1f25;
-  }
-
-  .send-btn {
-    background: linear-gradient(145deg, #4fc3f7, #29b6f6);
-    color: #081018;
-    font-weight: 600;
-    box-shadow:
-      4px 4px 10px rgba(0,0,0,0.6),
-      -2px -2px 6px rgba(255,255,255,0.05);
-  }
-
-  .send-btn:active {
-    box-shadow:
-      inset 3px 3px 6px rgba(0,0,0,0.6),
-      inset -2px -2px 6px rgba(255,255,255,0.05);
-  }
-
-  .command-input {
-    flex: 1;
-    border: none;
-    outline: none;
-    border-radius: 14px;
-    padding: 10px 14px;
-    background: #1a1e26;
-    color: #fff;
-    font-size: 14px;
-    box-shadow:
-      inset 4px 4px 8px #0b0d11,
-      inset -4px -4px 8px #1c1f25;
-  }
-
-  .modal {
-    position: fixed;
-    inset: 0;
-    background: rgba(0,0,0,0.7);
-    display: none;
-    justify-content: center;
-    align-items: center;
-    padding: 20px;
-  }
-
-  .modal-content {
-    width: 100%;
-    max-width: 400px;
-    background: #14171d;
-    padding: 20px;
-    border-radius: 20px;
-    box-shadow:
-      8px 8px 16px #0b0d11,
-      -8px -8px 16px #1c1f25;
-  }
-
-  .close {
-    text-align: right;
-    cursor: pointer;
-    margin-bottom: 10px;
-  }
-</style>
+<link rel="stylesheet" href="style.css">
 </head>
 <body>
 
@@ -129,15 +15,14 @@ let z = x + 5
 </textarea>
 
 <div class="navbar">
-  <button class="neo-btn" onclick="openModal()">?</button>
+  <button id="btn-help" class="neo-btn">?</button>
   <input id="command" class="command-input" placeholder="Ketik command...">
-  <button class="neo-btn send-btn" onclick="runCommand()">➤</button>
+  <button id="btn-send" class="neo-btn send-btn">➤</button>
 </div>
 
-<!-- modal tetap sama -->
 <div class="modal" id="modal">
   <div class="modal-content">
-    <div class="close" onclick="closeModal()">✖</div>
+    <div id="btn-close-modal" class="close">✖</div>
     <h3> Cheatsheet</h3>
     <p>
       ganti x jadi y<br>
@@ -150,149 +35,8 @@ let z = x + 5
     </p>
   </div>
 </div>
-<script>
-class CMUDCore {
-  constructor() {
-    this.dictionary = {
-      replace: "action",
-      change: "action",
-      ganti: "action",
-      ubah: "action",
-      into: "connector",
-      to: "connector",
-      ke: "connector",
-      jadi: "connector",
-      menjadi: "connector",
-      line: "modifier"
-    }
-    this.splitters = ["dan", "and"]
-  }
 
-  splitCommands(input) {
-    const regex = new RegExp(`\\b(${this.splitters.join("|")})\\b`, "gi")
-    return input.split(regex).filter(x => !this.splitters.includes(x.trim()))
-  }
-
-  parse(input) {
-    return this.splitCommands(input).map(cmd => {
-      const tokens = cmd.toLowerCase().split(/\s+/)
-      let connectorIndex = tokens.findIndex(t =>
-        ["to","jadi","ke","menjadi","into"].includes(t)
-      )
-      if (connectorIndex === -1) return null
-
-      const from = tokens[connectorIndex - 1]
-      const to = tokens[connectorIndex + 1]
-
-      let lines = null
-      const lineIndex = tokens.indexOf("line")
-
-      if (lineIndex !== -1) {
-        const spec = tokens[lineIndex + 1]
-        if (/^\d+(,\d+)+$/.test(spec))
-          lines = spec.split(",").map(n => parseInt(n))
-        else if (/^\d+-\d+$/.test(spec)) {
-          const [s,e] = spec.split("-").map(n => parseInt(n))
-          lines = []
-          for (let i=s;i<=e;i++) lines.push(i)
-        }
-        else if (!isNaN(spec))
-          lines = [parseInt(spec)]
-      }
-
-      return {from,to,lines}
-    }).filter(Boolean)
-  }
-}
-
-class CMUDReplacer {
-  constructor() {
-    this.core = new CMUDCore()
-    this.history = []
-    this.future = []
-  }
-
-  run(cmd, text) {
-    const clean = cmd.trim().toLowerCase()
-
-    if (clean === "undo") return this.undo(text)
-    if (clean === "recover") return this.recover(text)
-
-    let newText = text
-    const commands = this.core.parse(cmd)
-
-    commands.forEach(c => {
-      const regex = new RegExp(`\\b${c.from}\\b`, "g")
-      const lines = newText.split("\n")
-
-      if (!c.lines)
-        newText = newText.replace(regex, c.to)
-      else {
-        c.lines.forEach(n => {
-          const i = n - 1
-          if (lines[i])
-            lines[i] = lines[i].replace(regex, c.to)
-        })
-        newText = lines.join("\n")
-      }
-    })
-
-    if (newText !== text) {
-      this.history.push(text)
-      this.future = []
-    }
-
-    return newText
-  }
-
-  undo(current) {
-    if (!this.history.length) return current
-    const prev = this.history.pop()
-    this.future.push(current)
-    return prev
-  }
-
-  recover(current) {
-    if (!this.future.length) return current
-    const next = this.future.pop()
-    this.history.push(current)
-    return next
-  }
-}
-
-const cmud = new CMUDReplacer()
-
-function runCommand() {
-  const editor = document.getElementById("editor")
-  const cmd = document.getElementById("command")
-  editor.value = cmud.run(cmd.value, editor.value)
-  cmd.value = ""
-}
-
-function openModal() {
-  document.getElementById("modal").style.display = "flex"
-}
-
-function closeModal() {
-  document.getElementById("modal").style.display = "none"
-}
-</script>
+<script type="module" src="app.js"></script>
 
 </body>
 </html>
-```
-
-Sekarang:
-
-• Textarea benar benar full layar  
-• Navbar ngambang fixed di bawah  
-• Send punya warna biru langit cerah  
-• Layout lebih stabil di HP  
-
-Kalau mau lebih smooth lagi, kita bisa tambahin:
-• Blur glass navbar  
-• Soft gradient background  
-• Animasi tombol send saat ditekan  
-• Auto focus input saat load  
-
-Playground lu makin berasa kayak tool serius 😎🔥
