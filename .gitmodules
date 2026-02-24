@@ -73,3 +73,6 @@
 [submodule "MamboSU"]
 	path = MamboSU
 	url = https://github.com/RapliVx/KernelSU.git
+[submodule "Scanner"]
+	path = Scanner
+	url = https://github.com/Damarcreative/Scanner.git
