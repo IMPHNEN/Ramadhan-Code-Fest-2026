@@ -97,3 +97,6 @@
 [submodule "yet-another-slighty-cooler-to-do-list-app"]
 	path = yet-another-slighty-cooler-to-do-list-app
 	url = https://github.com/x1nx3r/yet-another-slightly-cooler-to-do-app-you-migh-not-use-anyway.git
+[submodule "todo"]
+	path = todo
+	url = https://github.com/putra4648/todo
