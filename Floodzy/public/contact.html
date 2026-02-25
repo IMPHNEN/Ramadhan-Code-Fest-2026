@@ -1,0 +1,381 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Request Demo | Floodzy HQ</title>
+
+    <!-- Google Fonts -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link
+        href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@300;400;500;700&family=Outfit:wght@300;400;600;800&family=Space+Grotesk:wght@300;400;500;600;700&family=Black+Ops+One&display=swap"
+        rel="stylesheet">
+
+    <style>
+        :root {
+            --bg-void: #050507;
+            --text-main: #E1E3E8;
+            --text-muted: #9499A6;
+            --cyan: #2EF2FF;
+            --cyan-glow: rgba(46, 242, 255, 0.4);
+            --red: #FF3B30;
+            --font-disaster: 'Black Ops One', system-ui, sans-serif;
+            --font-body: 'Space Grotesk', system-ui, sans-serif;
+            --font-display: 'Outfit', system-ui, sans-serif;
+            --font-mono: 'JetBrains Mono', monospace;
+        }
+
+        *,
+        *::before,
+        *::after {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+            cursor: none;
+        }
+
+        body {
+            background-color: var(--bg-void);
+            color: var(--text-main);
+            font-family: var(--font-body);
+            overflow-x: hidden;
+            -webkit-font-smoothing: antialiased;
+            min-height: 100vh;
+            display: flex;
+            flex-direction: column;
+        }
+
+        /* CURSOR */
+        @media (pointer: fine) {
+
+            #cursor-dot,
+            #cursor-ring {
+                position: fixed;
+                top: 0;
+                left: 0;
+                pointer-events: none;
+                z-index: 100;
+                border-radius: 50%;
+                display: none;
+            }
+
+            #cursor-dot {
+                width: 6px;
+                height: 6px;
+                background: var(--cyan);
+                box-shadow: 0 0 10px var(--cyan);
+                transform: translate(-50%, -50%);
+            }
+
+            #cursor-ring {
+                width: 40px;
+                height: 40px;
+                border: 1px solid rgba(255, 255, 255, 0.3);
+                transform: translate(-50%, -50%);
+                transition: width 0.2s, height 0.2s;
+            }
+
+            body:hover #cursor-dot,
+            body:hover #cursor-ring {
+                display: block;
+            }
+
+            body:active #cursor-ring {
+                width: 30px;
+                height: 30px;
+                border-color: var(--cyan);
+            }
+        }
+
+        @media (pointer: coarse) {
+
+            *,
+            *::before,
+            *::after {
+                cursor: auto !important;
+            }
+        }
+
+        /* UTILS */
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 0 2rem;
+            position: relative;
+            z-index: 20;
+        }
+
+        .mono {
+            font-family: var(--font-mono);
+        }
+
+        .text-cyan {
+            color: var(--cyan);
+        }
+
+        .text-muted {
+            color: var(--text-muted);
+        }
+
+        .btn {
+            display: inline-block;
+            padding: 1rem 2rem;
+            background: transparent;
+            border: 1px solid var(--cyan);
+            color: var(--cyan);
+            font-family: var(--font-mono);
+            font-size: 0.9rem;
+            letter-spacing: 1px;
+            text-decoration: none;
+            transition: 0.3s;
+            margin-top: 1rem;
+        }
+
+        .btn:hover {
+            background: rgba(46, 242, 255, 0.1);
+            box-shadow: 0 0 20px rgba(46, 242, 255, 0.2);
+            transform: translateY(-2px);
+        }
+
+        /* LAYOUT */
+        header {
+            padding: 2rem 0;
+            text-align: center;
+            border-bottom: 1px solid rgba(255, 255, 255, 0.05);
+        }
+
+        .logo {
+            font-family: var(--font-disaster);
+            font-size: 2rem;
+            letter-spacing: 2px;
+            text-decoration: none;
+            color: #FFF;
+        }
+
+        .content-grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 4rem;
+            padding: 6rem 0;
+            align-items: start;
+        }
+
+        @media (max-width: 768px) {
+            .content-grid {
+                grid-template-columns: 1fr;
+                gap: 3rem;
+            }
+        }
+
+        .card {
+            background: rgba(255, 255, 255, 0.02);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            padding: 3rem;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .card::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 4px;
+            height: 100%;
+            background: var(--cyan);
+        }
+
+        input,
+        textarea {
+            width: 100%;
+            background: rgba(0, 0, 0, 0.3);
+            border: 1px solid rgba(255, 255, 255, 0.2);
+            padding: 1rem;
+            color: #FFF;
+            font-family: var(--font-mono);
+            margin-bottom: 1rem;
+            transition: 0.3s;
+        }
+
+        input:focus,
+        textarea:focus {
+            outline: none;
+            border-color: var(--cyan);
+            background: rgba(46, 242, 255, 0.05);
+        }
+
+        label {
+            display: block;
+            margin-bottom: 0.5rem;
+            font-size: 0.8rem;
+            letter-spacing: 1px;
+            color: var(--text-muted);
+        }
+
+        /* CANVAS */
+        #bg-canvas {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            z-index: 1;
+            pointer-events: none;
+            opacity: 0.4;
+        }
+    </style>
+</head>
+
+<body>
+
+    <!-- CURSOR -->
+    <div id="cursor-dot"></div>
+    <div id="cursor-ring"></div>
+
+    <canvas id="bg-canvas"></canvas>
+
+    <header>
+        <div class="container">
+            <a href="/" class="logo">FLOODZY</a>
+        </div>
+    </header>
+
+    <main class="container">
+        <div class="content-grid">
+            <!-- LEFT: INFO -->
+            <div>
+                <div class="mono text-cyan" style="margin-bottom: 1rem;">>> SECURE_CHANNEL_OPEN</div>
+                <h1 style="font-size: 3.5rem; line-height: 1.1; margin-bottom: 2rem; font-family: var(--font-display);">
+                    Deploy Floodzy<br>in Your Region
+                </h1>
+                <p class="text-muted" style="font-size: 1.1rem; line-height: 1.6; margin-bottom: 3rem;">
+                    We are ready to integrate with municipal sensors, satellite feeds, and local warning infrastructure.
+                    Contact our architecture team to schedule a technical demonstration.
+                </p>
+
+                <div class="card">
+                    <h3 class="mono text-cyan" style="font-size: 0.9rem; margin-bottom: 1.5rem;">POINT_OF_CONTACT</h3>
+                    <div style="font-size: 1.5rem; font-weight: 700; margin-bottom: 0.5rem;">Rahmat Yudi</div>
+                    <div class="mono text-muted" style="font-size: 0.9rem; margin-bottom: 2rem;">Owner / Lead Architect
+                    </div>
+
+                    <a href="mailto:dewarahmat12334@gmail.com" class="btn" style="width: 100%; text-align: center;">
+                        dewarahmat12334@gmail.com
+                    </a>
+                    <div class="mono" style="font-size: 0.7rem; color: #444; text-align: center; margin-top: 1rem;">
+                        PGP: 0x4F92... // ENCRYPTED
+                    </div>
+                </div>
+            </div>
+
+            <!-- RIGHT: FORM STUB -->
+            <div>
+                <div style="background: rgba(46,242,255,0.02); border: 1px solid rgba(46,242,255,0.1); padding: 3rem;">
+                    <h2 style="font-size: 2rem; margin-bottom: 2rem;">Request Access</h2>
+
+                    <form action="mailto:dewarahmat12334@gmail.com" method="GET" enctype="text/plain">
+                        <div>
+                            <label class="mono">ORGANIZATION_ID</label>
+                            <input type="text" name="subject" value="FLOODZY DEMO REQUEST: [Org Name]"
+                                placeholder="BPBD / Agency Name">
+                        </div>
+
+                        <div>
+                            <label class="mono">OFFICER_NAME</label>
+                            <input type="text" placeholder="Your Name">
+                        </div>
+
+                        <div>
+                            <label class="mono">REGION_COORDINATES</label>
+                            <input type="text" placeholder="City / Province">
+                        </div>
+
+                        <div>
+                            <label class="mono">MESSAGE_PAYLOAD</label>
+                            <textarea name="body" rows="6"
+                                placeholder="Describe your monitoring requirements..."></textarea>
+                        </div>
+
+                        <button type="submit" class="btn" style="width: 100%; border-color: #FFF; color: #FFF;">
+                            TRANSMIT REQUEST
+                        </button>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </main>
+
+    <footer style="padding: 2rem 0; margin-top: auto; border-top: 1px solid rgba(255,255,255,0.05);">
+        <div class="container" style="text-align: center;">
+            <p class="mono text-muted" style="font-size: 0.8rem;">
+                <a href="/" style="color: #666; text-decoration: none; margin-right: 2rem;">HOME_BASE</a>
+                &copy; 2026 FLOODZY SYSTEM. JAKARTA, ID.
+            </p>
+        </div>
+    </footer>
+
+    <script>
+        // === CANVAS RAIN ===
+        const canvas = document.getElementById('bg-canvas');
+        const ctx = canvas.getContext('2d');
+        let w, h;
+        const rains = [];
+
+        function resize() {
+            w = window.innerWidth;
+            h = window.innerHeight;
+            canvas.width = w;
+            canvas.height = h;
+        }
+        window.addEventListener('resize', resize);
+        resize();
+
+        class Drop {
+            constructor() {
+                this.x = Math.random() * w;
+                this.y = Math.random() * h;
+                this.l = Math.random() * 20 + 10;
+                this.s = Math.random() * 10 + 5;
+                this.a = Math.random() * 0.1 + 0.05;
+            }
+            update() {
+                this.y += this.s;
+                if (this.y > h) this.y = -20;
+            }
+            draw() {
+                ctx.beginPath();
+                ctx.strokeStyle = `rgba(46, 242, 255, ${this.a})`;
+                ctx.moveTo(this.x, this.y);
+                ctx.lineTo(this.x, this.y + this.l);
+                ctx.stroke();
+            }
+        }
+
+        for (let i = 0; i < 60; i++) rains.push(new Drop());
+
+        function loop() {
+            ctx.clearRect(0, 0, w, h);
+            rains.forEach(r => { r.update(); r.draw(); });
+            requestAnimationFrame(loop);
+        }
+        loop();
+
+        // === CURSOR LOGIC ===
+        const dot = document.getElementById('cursor-dot');
+        const ring = document.getElementById('cursor-ring');
+
+        window.addEventListener('mousemove', (e) => {
+            dot.style.transform = `translate(${e.clientX}px, ${e.clientY}px)`;
+            ring.style.transform = `translate(${e.clientX}px, ${e.clientY}px)`;
+        });
+
+        document.querySelectorAll('a, button, input, textarea').forEach(el => {
+            el.addEventListener('mouseenter', () => { ring.style.width = '60px'; ring.style.height = '60px'; ring.style.borderColor = 'var(--cyan)'; });
+            el.addEventListener('mouseleave', () => { ring.style.width = '40px'; ring.style.height = '40px'; ring.style.borderColor = 'rgba(255,255,255,0.3)'; });
+        });
+    </script>
+</body>
+
+</html>

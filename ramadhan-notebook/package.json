@@ -1,0 +1,23 @@
+{
+  "name": "ramadhan",
+  "version": "1.0.0",
+  "description": "Aplikasi web untuk menyajikan menu sahur dan berbuka setiap hari selama bulan Ramadhan, lengkap dengan resep dan langkah-langkah pembuatannya.",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "prepare": "husky"
+  },
+  "keywords": [],
+  "author": "Reeze",
+  "license": "ISC",
+  "lint-staged": {
+    "server/**/*.{js,ts}": [
+      "npm --prefix server run lint",
+      "npm --prefix server run format"
+    ]
+  },
+  "devDependencies": {
+    "husky": "^9.1.7",
+    "lint-staged": "^15.4.3"
+  }
+}

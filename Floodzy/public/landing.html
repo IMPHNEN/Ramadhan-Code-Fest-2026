@@ -1,0 +1,1690 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Floodzy: Peta Banjir Realtime Indonesia</title>
+    <meta name="description"
+        content="Sistem peringatan dini banjir realtime untuk Indonesia. Pantau ketinggian air, curah hujan, dan prediksi banjir menggunakan IoT dan AI untuk antisipasi bencana.">
+    <meta name="keywords"
+        content="banjir, IoT, realtime, BMKG, peringatan dini, flood monitoring, Jakarta, Indonesia, AI forecasting">
+
+    <!-- Favicon & App Icons -->
+    <link rel="icon" href="/icon1.png" type="image/png">
+    <link rel="apple-touch-icon" href="/apple-icon.png">
+    <script type="application/ld+json">
+    {
+      "@context": "https://schema.org",
+      "@graph": [
+        {
+          "@type": "Organization",
+          "name": "Floodzy",
+          "url": "https://floodzy.id",
+          "logo": "https://floodzy.id/web-app-manifest-512x512.png",
+          "description": "Platform sistem peringatan dini banjir realtime berbasis IoT dan AI.",
+          "founder": {
+            "@type": "Person",
+            "name": "Rahmat Yudi Burhanudin"
+          }
+        },
+        {
+          "@type": "SoftwareApplication",
+          "name": "Floodzy",
+          "applicationCategory": "DisasterManagementApplication",
+          "operatingSystem": "Web",
+          "offers": {
+            "@type": "Offer",
+            "price": "0",
+            "priceCurrency": "IDR"
+          }
+        },
+        {
+          "@type": "FAQPage",
+          "mainEntity": [{
+            "@type": "Question",
+            "name": "Apakah Floodzy gratis?",
+            "acceptedAnswer": {
+              "@type": "Answer",
+              "text": "Ya, Floodzy dapat diakses secara gratis oleh masyarakat umum untuk memantau potensi banjir."
+            }
+          }, {
+            "@type": "Question",
+            "name": "Apakah data realtime terpercaya?",
+            "acceptedAnswer": {
+              "@type": "Answer",
+              "text": "Data Floodzy dikurasi dari sumber terpercaya seperti sensor IoT terkalibrasi dan data publik BMKG, namun tetap berfungsi sebagai alat bantu peringatan dini."
+            }
+          }, {
+            "@type": "Question",
+            "name": "Bagaimana Floodzy bekerja?",
+            "acceptedAnswer": {
+              "@type": "Answer",
+              "text": "Floodzy menggabungkan data curah hujan, ketinggian air sungai, dan topografi wilayah menggunakan AI untuk memprediksi potensi genangan."
+            }
+          }]
+        }
+      ]
+    }
+    </script>
+    <!-- Open Graph / Facebook -->
+    <meta property="og:type" content="website">
+    <meta property="og:url" content="https://floodzy.id/">
+    <meta property="og:title" content="Floodzy: Peta Banjir Realtime Indonesia">
+    <meta property="og:description"
+        content="Sistem peringatan dini banjir realtime. Pantau level air, hujan, dan prediksi banjir berbasis AI.">
+    <meta property="og:image" content="https://floodzy.id/web-app-manifest-512x512.png">
+
+    <!-- Twitter -->
+    <meta property="twitter:card" content="summary_large_image">
+    <meta property="twitter:url" content="https://floodzy.id/">
+    <meta property="twitter:title" content="Floodzy: Peta Banjir Realtime Indonesia">
+    <meta property="twitter:description"
+        content="Sistem peringatan dini banjir realtime. Pantau level air, hujan, dan prediksi banjir berbasis AI.">
+    <meta property="twitter:image" content="https://floodzy.id/web-app-manifest-512x512.png">
+
+    <script>
+        if (location.search.includes('force_intro')) {
+            localStorage.removeItem('floodzy_seen');
+        } else if (localStorage.getItem('floodzy_seen')) {
+            window.location.href = '/dashboard';
+        }
+    </script>
+    <!-- Google Fonts -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link
+        href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@300;400;500;700&family=Outfit:wght@300;400;600;800&family=Space+Grotesk:wght@300;400;500;600;700&family=Playfair+Display+SC:wght@700;900&family=Black+Ops+One&display=swap"
+        rel="stylesheet">
+    <style>
+        :root {
+            /* Colors */
+            --bg-void: #02040a;
+            /* Deeper blue-black */
+            --text-main: #E1E3E8;
+            --text-muted: #9499A6;
+
+            /* Floodzy Blue Scheme */
+            --cyan: #00F0FF;
+            /* Bright Cyan Highlight */
+            --blue-primary: #0066FF;
+            --blue-deep: #001233;
+
+            /* Gradients */
+            --main-gradient: linear-gradient(135deg, #00C6FF 0%, #0072FF 100%);
+            --glow-gradient: radial-gradient(circle, rgba(0, 114, 255, 0.4) 0%, transparent 70%);
+
+            --cyan-glow: rgba(0, 198, 255, 0.5);
+            --red: #FF3B30;
+            --red-glow: rgba(255, 59, 48, 0.4);
+
+            /* Fonts */
+            --font-disaster: 'Black Ops One', system-ui, sans-serif;
+            --font-body: 'Space Grotesk', system-ui, sans-serif;
+            --font-display: 'Outfit', system-ui, sans-serif;
+            --font-mono: 'JetBrains Mono', monospace;
+            /* Z-Index Layers */
+            --z-bg: 0;
+            --z-rain: 5;
+            --z-scene: 10;
+            --z-water: 20;
+            --z-ui: 50;
+            --z-cursor: 100;
+        }
+
+        /* RESET */
+        *,
+        *::before,
+        *::after {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+            cursor: none;
+        }
+
+        html {
+            scroll-behavior: smooth;
+        }
+
+        body {
+            background-color: var(--bg-void);
+            color: var(--text-main);
+            font-family: var(--font-body);
+            overflow-x: hidden;
+            -webkit-font-smoothing: antialiased;
+            transition: transform 0.1s;
+        }
+
+        /* CURSOR ACCESSIBILITY */
+        @media (pointer: fine) {
+
+            *,
+            *::before,
+            *::after {
+                cursor: none;
+            }
+        }
+
+        @media (pointer: coarse) {
+
+            *,
+            *::before,
+            *::after {
+                cursor: auto !important;
+            }
+        }
+
+        /* MICRO SHAKE - FEATURE ADDITION (TONED DOWN) */
+        body.failure {
+            animation: micro-shake 0.6s infinite;
+        }
+
+        @keyframes micro-shake {
+            0% {
+                transform: translate(0, 0);
+            }
+
+            50% {
+                transform: translate(1px, -1px);
+            }
+
+            100% {
+                transform: translate(0, 0);
+            }
+        }
+
+        /* CURSOR */
+        #cursor-dot,
+        #cursor-ring {
+            position: fixed;
+            top: 0;
+            left: 0;
+            pointer-events: none;
+            z-index: var(--z-cursor);
+            border-radius: 50%;
+            display: none;
+        }
+
+        #cursor-dot {
+            width: 6px;
+            height: 6px;
+            background: var(--cyan);
+            box-shadow: 0 0 10px var(--cyan);
+            transform: translate(-50%, -50%);
+        }
+
+        #cursor-ring {
+            width: 40px;
+            height: 40px;
+            border: 1px solid var(--cyan-glow);
+            transform: translate(-50%, -50%);
+            transition: width 0.3s, height 0.3s, border-color 0.3s;
+            will-change: transform;
+        }
+
+        body.sentinel-active #cursor-ring {
+            width: 80px;
+            height: 80px;
+            border-color: transparent;
+        }
+
+        #cursor-ring::after {
+            content: "";
+            position: absolute;
+            inset: -2px;
+            border-radius: inherit;
+            border: 2px dashed var(--red);
+            opacity: 0;
+            background: rgba(255, 59, 48, 0.05);
+            transition: opacity .2s ease;
+        }
+
+        body.sentinel-active #cursor-ring::after {
+            opacity: 1;
+            animation: spin 4s linear infinite;
+        }
+
+        @keyframes spin {
+            from {
+                transform: rotate(0deg);
+            }
+
+            to {
+                transform: rotate(360deg);
+            }
+        }
+
+        @media (pointer: coarse) {
+
+            *,
+            *::before,
+            *::after {
+                cursor: auto !important;
+            }
+
+            #cursor-dot,
+            #cursor-ring {
+                display: none !important;
+            }
+        }
+
+        /* FX CANVAS */
+        #fx-canvas {
+            position: fixed;
+            inset: 0;
+            width: 100%;
+            height: 100%;
+            z-index: 35;
+            /* di atas rain & scene, di bawah HUD */
+            pointer-events: none;
+            opacity: 1;
+        }
+
+        /* SPLASH OVERLAY (air ke kamera) */
+        #splash-overlay {
+            position: fixed;
+            inset: -10%;
+            z-index: 40;
+            pointer-events: none;
+            opacity: 0;
+            transform: scale(0.98);
+            background: radial-gradient(circle at 50% 40%, rgba(46, 242, 255, 0.35), rgba(46, 242, 255, 0.08) 35%, transparent 60%), radial-gradient(circle at 35% 55%, rgba(255, 255, 255, 0.10), transparent 55%), radial-gradient(circle at 65% 60%, rgba(255, 255, 255, 0.08), transparent 55%);
+            filter: blur(0px) saturate(110%);
+            mix-blend-mode: screen;
+            transition: opacity 200ms linear, transform 200ms linear, filter 200ms linear;
+        }
+
+        /* Clouds */
+        #cloud-layer {
+            position: fixed;
+            inset: 0;
+            z-index: 6;
+            /* di atas background, di bawah scene */
+            pointer-events: none;
+            opacity: 0.55;
+            filter: blur(0.2px);
+        }
+
+        .cloud {
+            position: absolute;
+            top: 10%;
+            width: 320px;
+            height: 120px;
+            background-repeat: no-repeat;
+            background-size: contain;
+            opacity: 0.45;
+            animation: cloud-drift linear infinite;
+            will-change: transform;
+        }
+
+        @keyframes cloud-drift {
+            from {
+                transform: translateX(-40vw);
+            }
+
+            to {
+                transform: translateX(140vw);
+            }
+        }
+
+        /* Birds */
+        #bird-layer {
+            position: fixed;
+            inset: 0;
+            z-index: 7;
+            pointer-events: none;
+        }
+
+        .bird {
+            position: absolute;
+            top: 18%;
+            width: 48px;
+            height: 24px;
+            opacity: 0.35;
+            animation: bird-fly linear infinite;
+            will-change: transform;
+            filter: drop-shadow(0 0 6px rgba(46, 242, 255, 0.15));
+        }
+
+        @keyframes bird-fly {
+            from {
+                transform: translateX(-20vw) translateY(0) scale(0.9);
+            }
+
+            50% {
+                transform: translateX(50vw) translateY(-8px) scale(1);
+            }
+
+            to {
+                transform: translateX(120vw) translateY(2px) scale(0.92);
+            }
+        }
+
+        #status-display.disaster {
+            font-family: var(--font-disaster);
+            letter-spacing: 0.06em;
+            text-transform: uppercase;
+        }
+
+        @media (prefers-reduced-motion: reduce) {
+            * {
+                cursor: auto !important;
+            }
+
+            #cursor-dot,
+            #cursor-ring {
+                display: none !important;
+            }
+
+            body.failure {
+                animation: none !important;
+            }
+
+            #visual-canvas,
+            #fx-canvas,
+            #wave-canvas,
+            #fish-canvas {
+                display: none !important;
+            }
+
+            .radar-scan,
+            .node.pulse,
+            .cloud,
+            .bird {
+                animation: none !important;
+            }
+
+            #splash-overlay {
+                display: none !important;
+            }
+        }
+
+        /* HEADER */
+        header {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            padding: 1.5rem 2rem;
+            z-index: var(--z-ui);
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            background: linear-gradient(to bottom, rgba(5, 5, 7, 0.95), transparent);
+            pointer-events: auto;
+        }
+
+        /* DRAMATIC LOGO */
+        .floodzy-logo {
+            font-family: 'Playfair Display SC', serif;
+            font-size: 2rem;
+            font-weight: 700;
+            letter-spacing: 0.05em;
+            color: rgba(46, 242, 255, 0.3);
+            position: relative;
+            text-decoration: none;
+            overflow: hidden;
+            -webkit-box-reflect: below -8px linear-gradient(transparent, rgba(0, 0, 0, 0.3));
+            background-image: linear-gradient(to top, #00C6FF 50%, rgba(0, 198, 255, 0.3) 50%);
+            background-size: 100% 200%;
+            background-position: 0% 0%;
+            -webkit-background-clip: text;
+            background-clip: text;
+            color: transparent;
+            animation: flood-fill 3s ease-out forwards;
+        }
+
+        @keyframes flood-fill {
+            0% {
+                background-position: 0% 0%;
+            }
+
+            100% {
+                background-position: 0% 100%;
+            }
+        }
+
+        .floodzy-logo::after {
+            content: 'FLOODZY';
+            position: absolute;
+            top: 0;
+            left: 0;
+            color: transparent;
+            text-shadow: 0 0 15px rgba(46, 242, 255, 0.5);
+            opacity: 0;
+            pointer-events: none;
+            animation: glow-in 2s 1s forwards;
+        }
+
+        @keyframes glow-in {
+            to {
+                opacity: 1;
+            }
+        }
+
+        .logo {
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+        }
+
+        /* VISUAL CANVAS (RAIN) */
+        #visual-canvas {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            z-index: var(--z-rain);
+            pointer-events: none;
+            opacity: 1;
+            transition: opacity 2s;
+        }
+
+        /* UTILS */
+        .container {
+            width: 100%;
+            max-width: 1400px;
+            margin: 0 auto;
+            padding: 0 2rem;
+            position: relative;
+            z-index: 2;
+        }
+
+        .mono {
+            font-family: var(--font-mono);
+            letter-spacing: -0.05em;
+        }
+
+        .text-cyan {
+            color: var(--cyan);
+            text-shadow: 0 0 10px var(--cyan-glow);
+        }
+
+        .text-red {
+            color: var(--red);
+            text-shadow: 0 0 10px var(--red-glow);
+        }
+
+        .text-warning {
+            color: #FFD60A;
+            text-shadow: 0 0 10px rgba(255, 214, 10, 0.35);
+        }
+
+        h1,
+        h2,
+        h3 {
+            font-family: var(--font-display);
+            line-height: 1.1;
+            letter-spacing: -0.03em;
+        }
+
+        .nav-link {
+            color: var(--text-muted);
+            text-decoration: none;
+            font-family: var(--font-mono);
+            font-size: 0.8rem;
+            margin-left: 2rem;
+            transition: color 0.3s;
+            cursor: pointer;
+        }
+
+        .nav-link:hover {
+            color: var(--cyan);
+        }
+
+        /* === SCENE 1: HERO (UPGRADED) === */
+        .hero {
+            min-height: 100vh;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            text-align: center;
+            position: relative;
+            overflow: hidden;
+        }
+
+        #hero-title {
+            transition: opacity 0.5s;
+        }
+
+        .hero-subtitle {
+            transition: opacity 0.5s;
+            opacity: 1;
+        }
+
+        /* HERO LENS EFFECT */
+        .hero-lens {
+            position: absolute;
+            inset: 0;
+            background: radial-gradient(circle at 50% 30%, rgba(46, 242, 255, 0.35), rgba(46, 242, 255, 0.05) 40%, transparent 60%);
+            opacity: 0;
+            filter: blur(0px);
+            transition: opacity 0.8s ease, filter 1s ease;
+            z-index: 8;
+            pointer-events: none;
+        }
+
+        .hero-submerge {
+            position: absolute;
+            inset: 0;
+            backdrop-filter: blur(0px) saturate(100%);
+            transition: backdrop-filter 1s ease;
+            z-index: 7;
+            pointer-events: none;
+        }
+
+        /* Triggered Classes */
+        .hero.entering .hero-lens {
+            opacity: 1;
+            filter: blur(8px);
+        }
+
+        .hero.entering .hero-submerge {
+            backdrop-filter: blur(12px) saturate(140%);
+        }
+
+        .btn {
+            display: inline-flex;
+            align-items: center;
+            gap: 10px;
+            padding: 1rem 2rem;
+            background: rgba(46, 242, 255, 0.05);
+            border: 1px solid var(--cyan);
+            color: var(--cyan);
+            font-family: var(--font-mono);
+            font-size: 0.9rem;
+            text-transform: uppercase;
+            text-decoration: none;
+            transition: all 0.3s ease;
+            cursor: pointer;
+            z-index: 10;
+        }
+
+        .btn:hover {
+            opacity: 0.8;
+            box-shadow: 0 0 30px var(--cyan-glow);
+        }
+
+        /* === DIRECTOR'S CUT STAGE SCENES === */
+        #director-stage {
+            position: relative;
+            height: 600vh;
+            border-top: 1px solid rgba(255, 255, 255, 0.05);
+        }
+
+        #sticky-viewport {
+            position: sticky;
+            top: 0;
+            height: 100vh;
+            overflow: hidden;
+            display: flex;
+            align-items: flex-end;
+            justify-content: center;
+            background: radial-gradient(circle at 50% 10%, #1a1d2e 0%, #050507 80%);
+        }
+
+        /* City */
+        .skyline {
+            position: absolute;
+            bottom: 0;
+            left: 0;
+            width: 100%;
+            height: 60%;
+            background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 1440 320'%3E%3Cpath fill='%230a0c12' fill-opacity='1' d='M0,224L60,213.3C120,203,240,181,360,181.3C480,181,600,203,720,192C840,181,960,139,1080,128C1200,117,1320,139,1380,149.3L1440,160L1440,320L1380,320C1320,320,1200,320,1080,320C960,320,840,320,720,320C600,320,480,320,360,320C240,320,120,320,60,320L0,320Z'%3E%3C/path%3E%3C/svg%3E");
+            background-size: cover;
+            opacity: 0.5;
+        }
+
+        /* Props */
+        .scenery-obj {
+            position: absolute;
+            bottom: 35%;
+            transition: transform 2s ease;
+            transform-origin: top center;
+            z-index: 5;
+        }
+
+        .scenery-obj svg {
+            fill: #232736;
+            stroke: #555;
+            height: 100%;
+        }
+
+        #obj-fence {
+            left: 15%;
+            width: 150px;
+            height: 60px;
+        }
+
+        #obj-tree {
+            right: 20%;
+            width: 90px;
+            height: 160px;
+        }
+
+        .fence-drift {
+            transform: translateX(200px) rotate(15deg) translateY(100px);
+            opacity: 0.5;
+        }
+
+        .tree-fall {
+            transform: rotate(85deg) translateX(50px) translateY(50px);
+            transform-origin: bottom center;
+        }
+
+        /* Sinking Letters */
+        #sinking-text-container {
+            position: absolute;
+            top: 40%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            display: flex;
+            gap: 1rem;
+            z-index: var(--z-scene);
+        }
+
+        .sink-char {
+            font-family: var(--font-display);
+            font-size: 5rem;
+            font-weight: 800;
+            color: #FFF;
+            transition: all 1s ease;
+        }
+
+        .drowning {
+            transform: translateY(200px) rotate(20deg);
+            opacity: 0;
+            filter: blur(10px);
+        }
+
+        .resurfacing {
+            animation: buoyant-rise 1.2s cubic-bezier(0.25, 1, 0.5, 1) forwards !important;
+        }
+
+        @keyframes buoyant-rise {
+            0% {
+                transform: translateY(150px) rotate(10deg);
+                opacity: 0;
+                filter: blur(5px);
+            }
+
+            50% {
+                transform: translateY(-15px) rotate(-5deg);
+                opacity: 1;
+                filter: blur(0);
+            }
+
+            70% {
+                transform: translateY(8px) rotate(3deg);
+            }
+
+            100% {
+                transform: translateY(0) rotate(0);
+            }
+        }
+
+        /* Rescue */
+        #rescue-cord {
+            position: absolute;
+            top: -100px;
+            left: 50%;
+            width: 2px;
+            height: 50vh;
+            background: linear-gradient(to bottom, var(--cyan), transparent);
+            transition: top 1s ease-out;
+            z-index: var(--z-ui);
+            cursor: help;
+        }
+
+        #rescue-drone {
+            position: absolute;
+            top: -100px;
+            left: 50%;
+            transform: translateX(-50%);
+            transition: top 1s ease-out, transform 2s ease-in-out;
+            z-index: var(--z-ui);
+        }
+
+        .drone-light {
+            animation: blink 0.5s infinite;
+            fill: var(--red);
+        }
+
+        /* Water */
+        .water-overlay {
+            position: absolute;
+            bottom: 0;
+            left: 0;
+            width: 100%;
+            height: 0%;
+            background: linear-gradient(to top, rgba(46, 242, 255, 0.5), rgba(46, 242, 255, 0.05));
+            /* border-top: 3px solid rgba(46, 242, 255, 0.9); REMOVED */
+            box-shadow: 0 -10px 40px rgba(46, 242, 255, 0.5);
+            backdrop-filter: blur(4px);
+            transition: height 0.1s linear;
+            overflow: visible;
+            /* Allow wave to stick out top */
+            z-index: var(--z-water);
+        }
+
+        .water-noise {
+            position: absolute;
+            inset: 0;
+            z-index: 24;
+        }
+
+        /* Fish layer: di bawah noise, di bawah wave */
+        .fish-layer {
+            /* DEPRECATED: Replaced by Canvas */
+            display: none;
+        }
+
+        /* fish: subtle, underwater */
+        #fish-canvas {
+            position: absolute;
+            inset: 0;
+            width: 100%;
+            height: 100%;
+            z-index: 23;
+            pointer-events: none;
+            opacity: 0.35;
+            mix-blend-mode: soft-light;
+            filter: blur(0.3px);
+        }
+
+        /* PROCEDURAL CANVAS WAVE */
+        #wave-canvas {
+            position: absolute;
+            top: -60px;
+            /* Center wave on water surface */
+            left: 0;
+            width: 100%;
+            height: 120px;
+            pointer-events: none;
+            z-index: 30;
+        }
+
+        .water-noise {
+            width: 100%;
+            height: 100%;
+            background: url("data:image/svg+xml,%3Csvg viewBox='0 0 200 200' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='noiseFilter'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.65' numOctaves='3' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23noiseFilter)' opacity='0.5'/%3E%3C/svg%3E");
+            opacity: 0.4;
+            mix-blend-mode: overlay;
+            animation: water-drift 20s linear infinite;
+        }
+
+        @keyframes water-drift {
+            from {
+                background-position: 0 0;
+            }
+
+            to {
+                background-position: 200px 0;
+            }
+        }
+
+        #hud-overlay {
+            position: absolute;
+            top: 120px;
+            left: 50%;
+            transform: translateX(-50%);
+            text-align: center;
+            z-index: 60;
+        }
+
+        .system-grid-overlay {
+            position: absolute;
+            inset: 0;
+            background-image: linear-gradient(rgba(46, 242, 255, 0.1) 1px, transparent 1px), linear-gradient(90deg, rgba(46, 242, 255, 0.1) 1px, transparent 1px);
+            background-size: 60px 60px;
+            opacity: 0;
+            transition: opacity 1s;
+            z-index: 25;
+            pointer-events: none;
+        }
+
+        /* === SPLIT === */
+        #split-section {
+            display: grid;
+            grid-template-columns: 1fr 1px 1fr;
+            border-top: 1px solid #222;
+            min-height: 80vh;
+            overflow: hidden;
+        }
+
+        .split-content {
+            padding: 4rem;
+            display: flex;
+            flex-direction: column;
+            position: relative;
+        }
+
+        .split-left {
+            justify-content: flex-start;
+            padding-top: 15vh;
+            text-align: right;
+            background: #08080a;
+        }
+
+        .split-right {
+            justify-content: flex-end;
+            padding-bottom: 20vh;
+            text-align: left;
+            background: var(--bg-void);
+        }
+
+        .split-divider {
+            background: var(--cyan);
+            height: 100%;
+            box-shadow: 0 0 15px var(--cyan);
+            opacity: 0.5;
+        }
+
+        /* === PLAYGROUND === */
+        .playground-container {
+            display: grid;
+            grid-template-columns: 1.5fr 1fr;
+            gap: 3rem;
+            margin-top: 4rem;
+            background: rgba(10, 12, 18, 0.6);
+            border: 1px solid rgba(46, 242, 255, 0.1);
+            padding: 3rem;
+            position: relative;
+            backdrop-filter: blur(10px);
+        }
+
+        .tech-corner {
+            position: absolute;
+            width: 20px;
+            height: 20px;
+            border: 2px solid var(--cyan);
+            opacity: 0.5;
+            transition: opacity 0.3s;
+        }
+
+        .tech-corner.tl {
+            top: -1px;
+            left: -1px;
+            border-right: none;
+            border-bottom: none;
+        }
+
+        .tech-corner.tr {
+            top: -1px;
+            right: -1px;
+            border-left: none;
+            border-bottom: none;
+        }
+
+        .tech-corner.bl {
+            bottom: -1px;
+            left: -1px;
+            border-right: none;
+            border-top: none;
+        }
+
+        .tech-corner.br {
+            bottom: -1px;
+            right: -1px;
+            border-left: none;
+            border-top: none;
+        }
+
+        .playground-container:hover .tech-corner {
+            opacity: 1;
+            box-shadow: 0 0 10px var(--cyan-glow);
+        }
+
+        #sim-map {
+            background: linear-gradient(rgba(46, 242, 255, 0.05) 1px, transparent 1px), linear-gradient(90deg, rgba(46, 242, 255, 0.05) 1px, transparent 1px);
+            background-size: 40px 40px;
+            background-color: #08090f;
+            height: 350px;
+            position: relative;
+            overflow: hidden;
+            box-shadow: inset 0 0 50px rgba(0, 0, 0, 0.8);
+            border: 1px solid rgba(46, 242, 255, 0.1);
+        }
+
+        .radar-scan {
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            width: 150%;
+            height: 150%;
+            background: conic-gradient(from 0deg, transparent 0deg, rgba(46, 242, 255, 0.1) 60deg, transparent 60.1deg);
+            transform-origin: top left;
+            animation: radar-spin 8s linear infinite;
+            pointer-events: none;
+        }
+
+        .node {
+            position: absolute;
+            width: 12px;
+            height: 12px;
+            border-radius: 50%;
+            background: rgba(46, 242, 255, 0.2);
+            border: 1px solid var(--cyan);
+            transform: translate(-50%, -50%);
+            transition: background 0.5s, border-color 0.5s, transform 0.3s;
+        }
+
+        .node::after {
+            content: '';
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            width: 100%;
+            height: 100%;
+            border-radius: 50%;
+            border: 1px solid var(--cyan);
+            opacity: 0;
+            transform: translate(-50%, -50%) scale(1);
+        }
+
+        .node.pulse {
+            animation: node-pulse 3s infinite;
+        }
+
+        .node.ripple::after {
+            animation: node-ripple 1s ease-out;
+        }
+
+        .node.warning {
+            background: rgba(255, 214, 10, 0.2);
+            border-color: #FFD60A;
+        }
+
+        .node.critical {
+            background: rgba(255, 59, 48, 0.5);
+            border-color: var(--red);
+            box-shadow: 0 0 15px var(--red);
+            animation: critical-pulse 0.5s infinite alternate;
+        }
+
+        .map-hud {
+            position: absolute;
+            bottom: 10px;
+            right: 10px;
+            text-align: right;
+            font-family: var(--font-mono);
+            font-size: 0.7rem;
+            color: var(--cyan);
+            opacity: 0.7;
+            pointer-events: none;
+        }
+
+        @keyframes radar-spin {
+            from {
+                transform: translate(-50%, -50%) rotate(0deg);
+            }
+
+            to {
+                transform: translate(-50%, -50%) rotate(360deg);
+            }
+        }
+
+        @keyframes node-pulse {
+            0% {
+                transform: translate(-50%, -50%) scale(1);
+            }
+
+            50% {
+                transform: translate(-50%, -50%) scale(1.2);
+            }
+
+            100% {
+                transform: translate(-50%, -50%) scale(1);
+            }
+        }
+
+        @keyframes node-ripple {
+            0% {
+                opacity: 1;
+                transform: translate(-50%, -50%) scale(1);
+            }
+
+            100% {
+                opacity: 0;
+                transform: translate(-50%, -50%) scale(3);
+            }
+        }
+
+        @keyframes critical-pulse {
+            from {
+                opacity: 0.5;
+            }
+
+            to {
+                opacity: 1;
+            }
+        }
+
+        .shaking {
+            animation: shake 0.5s infinite;
+        }
+
+        @keyframes shake {
+            0% {
+                transform: rotate(0deg);
+            }
+
+            25% {
+                transform: rotate(5deg);
+            }
+
+            75% {
+                transform: rotate(-5deg);
+            }
+
+            100% {
+                transform: rotate(0deg);
+            }
+        }
+
+        /* === SUNRISE (FINAL) === */
+        #final-sunrise {
+            height: 100vh;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            text-align: center;
+            background: radial-gradient(circle at 50% 100%, rgba(46, 242, 255, 0.1) 0%, transparent 60%);
+            position: relative;
+            overflow: hidden;
+            margin-bottom: 0;
+            padding-bottom: 4rem;
+        }
+
+        .sun-orb {
+            width: 400px;
+            height: 400px;
+            border-radius: 50%;
+            background: radial-gradient(circle, #FFD60A, transparent 70%);
+            position: absolute;
+            bottom: -200px;
+            left: 50%;
+            transform: translateX(-50%);
+            opacity: 0;
+            transition: all 2.5s cubic-bezier(0.2, 0.8, 0.2, 1);
+            filter: blur(40px);
+            z-index: 1;
+        }
+
+        .sun-orb.rise {
+            bottom: -50px;
+            opacity: 1;
+        }
+
+        /* FEATURE ADDITION: Final Node & Network */
+        .final-node {
+            position: relative;
+            width: 14px;
+            height: 14px;
+            background: var(--cyan);
+            border-radius: 50%;
+            box-shadow: 0 0 30px var(--cyan);
+            margin: 2rem auto;
+            animation: pulse-node 2s infinite;
+            z-index: 10;
+        }
+
+        @keyframes pulse-node {
+            0% {
+                transform: scale(1);
+                opacity: 1;
+            }
+
+            50% {
+                transform: scale(1.8);
+                opacity: 0.6;
+            }
+
+            100% {
+                transform: scale(1);
+                opacity: 1;
+            }
+        }
+
+        .final-network {
+            position: absolute;
+            inset: 0;
+            background-image: radial-gradient(circle at 50% 50%, rgba(46, 242, 255, 0.15), transparent 60%);
+            opacity: 0;
+            transition: opacity 2s ease;
+            z-index: 5;
+        }
+
+        /* === OPS FOOTER (ADDED) === */
+        .ops-footer {
+            border-top: 1px solid rgba(46, 242, 255, 0.2);
+            background: #020202;
+            padding: 4rem 0 2rem;
+            position: relative;
+            z-index: 50;
+        }
+
+        .footer-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 2rem;
+            margin-bottom: 3rem;
+        }
+
+        .footer-link {
+            display: block;
+            color: var(--text-muted);
+            text-decoration: none;
+            margin-bottom: 0.5rem;
+            font-family: var(--font-mono);
+            font-size: 0.9rem;
+            transition: color 0.3s;
+        }
+
+        .footer-link:hover {
+            color: var(--cyan);
+            letter-spacing: 1px;
+        }
+
+        .system-status-light {
+            display: inline-block;
+            width: 8px;
+            height: 8px;
+            background: var(--cyan);
+            border-radius: 50%;
+            box-shadow: 0 0 10px var(--cyan);
+            margin-right: 8px;
+        }
+
+        /* === MOBILE RESPONSIVENESS === */
+        /* === MOBILE RESPONSIVENESS (OPTIMIZED) === */
+        @media (max-width: 768px) {
+
+            /* Typography Scale Down */
+            html {
+                font-size: 14px;
+            }
+
+            .floodzy-logo {
+                font-size: 1.25rem;
+            }
+
+            h1 {
+                font-size: 2.25rem !important;
+                line-height: 1.1;
+            }
+
+            h2 {
+                font-size: 1.75rem !important;
+                line-height: 1.2;
+            }
+
+            p {
+                font-size: 1rem !important;
+            }
+
+            /* Scrollytelling Elements */
+            .sink-char {
+                font-size: 3rem;
+            }
+
+            #hud-overlay {
+                top: 100px;
+                transform: translateX(-50%) scale(0.8);
+            }
+
+            /* Layout Stacking */
+            #split-section {
+                grid-template-columns: 1fr;
+                min-height: auto;
+            }
+
+            .split-content {
+                padding: 2.5rem 1.5rem;
+                text-align: left;
+            }
+
+            .split-left {
+                padding-top: 2rem;
+                justify-content: flex-start;
+            }
+
+            .scenery-obj {
+                transform-origin: bottom center;
+            }
+
+            #obj-fence {
+                left: -20px;
+                transform: scale(0.8);
+            }
+
+            #obj-tree {
+                right: -30px;
+                transform: scale(0.7);
+            }
+
+            #director-stage {
+                height: 400vh;
+            }
+
+            .split-right {
+                padding-bottom: 2rem;
+                justify-content: flex-start;
+                background: rgba(5, 5, 7, 0.5);
+            }
+
+            .split-divider {
+                display: none;
+            }
+
+            /* Threat Playground */
+            .playground-container {
+                grid-template-columns: 1fr;
+                gap: 1.5rem;
+                padding: 1rem;
+                margin-top: 1.5rem;
+            }
+
+            #sim-map {
+                height: 200px;
+            }
+
+            /* Spacing Reductions */
+            .container {
+                padding: 0 1.25rem;
+            }
+
+            section.container {
+                padding: 3rem 0 !important;
+            }
+
+            /* Section Tweaks */
+            .mid-hero-title {
+                font-size: 2rem !important;
+                margin-bottom: 1rem;
+            }
+
+            .stats-grid {
+                gap: 2rem;
+            }
+
+            .stats-grid>div {
+                padding: 1.5rem !important;
+            }
+
+            /* Footer */
+            .ops-footer {
+                padding: 2rem 0;
+            }
+
+            /* Header Mobile */
+            header {
+                padding: 0.75rem 1rem;
+            }
+
+            .nav-link {
+                margin-left: 0.75rem;
+                font-size: 0.7rem;
+            }
+        }
+    </style>
+</head>
+
+<body>
+    <!-- CURSOR -->
+    <div id="cursor-dot"></div>
+    <div id="cursor-ring"></div>
+    <!-- RAIN -->
+    <canvas id="visual-canvas"></canvas>
+    <!-- ATMOSPHERE -->
+    <div id="cloud-layer" aria-hidden="true"></div>
+    <div id="bird-layer" aria-hidden="true"></div>
+    <!-- FX: droplets + bubbles -->
+    <canvas id="fx-canvas" aria-hidden="true"></canvas>
+    <!-- Water splash overlay (ke kamera) -->
+    <div id="splash-overlay" aria-hidden="true"></div>
+    <!-- HEADER -->
+    <header>
+        <div class="logo">
+            <!-- Replaced Text with Dramatic Logo -->
+            <a href="/" class="floodzy-logo">FLOODZY</a>
+        </div>
+        <nav style="display: flex; align-items: center;">
+            <a href="/" class="nav-link">BERANDA</a>
+            <a href="/dashboard" class="nav-link">DASHBOARD</a>
+            <button id="anim-toggle" class="nav-link"
+                style="background:none; border:none; margin-left:2rem; color:var(--text-muted); cursor:pointer;">
+                ANIMASI: <span id="anim-status" style="color:var(--cyan)">ON</span>
+            </button>
+        </nav>
+    </header>
+    <!-- SCENE 1: HERO (UPDATED WITH LENS) -->
+    <section class="hero">
+        <div class="hero-lens" id="hero-lens"></div>
+        <div class="hero-submerge" id="hero-submerge"></div>
+        <div class="container" style="position: relative; z-index: 20;">
+            <!-- Updated Copy -->
+            <h1 id="hero-title"
+                style="font-size: clamp(3rem, 8vw, 7rem); background: var(--main-gradient); -webkit-background-clip: text; -webkit-text-fill-color: transparent;">
+                Selamat Datang di Dunia Floodzy</h1>
+            <p class="mono text-cyan" id="hero-status" style="margin-bottom: 2rem;">Inisialisasi Simulasi...</p>
+            <div
+                style="display: flex; gap: 1rem; justify-content: center; margin-bottom: 2rem; position: relative; z-index: 50;">
+                <a href="/dashboard" class="btn" onclick="localStorage.setItem('floodzy_seen', 'yes')"
+                    style="background: var(--main-gradient); border: none; color: white; font-weight: 600;">BUKA
+                    DASHBOARD</a>
+                <button
+                    onclick="localStorage.setItem('floodzy_seen', 'yes'); document.getElementById('predict-section').scrollIntoView({behavior: 'smooth'})"
+                    class="btn" style="border-style: dashed; padding: 1rem 1.5rem;">LEWATI SIMULASI</button>
+            </div>
+            <div class="mono" style="opacity: 0.5;">↓ GULIR UNTUK MULAI</div>
+        </div>
+    </section>
+
+    <!-- ABOUT FLOODZY (SEO & TRUST) -->
+    <section class="container" style="padding: 5rem 0; max-width:800px;">
+        <h2
+            style="text-align:center; margin-bottom:1.5rem; background: var(--main-gradient); -webkit-background-clip: text; -webkit-text-fill-color: transparent;">
+            Tentang Floodzy</h2>
+        <p style="line-height:1.6; color:var(--text-muted); font-size: 1.1rem;">
+            Floodzy adalah platform sistem peringatan banjir realtime yang dikembangkan di Indonesia untuk membantu
+            pemerintah daerah, BPBD, relawan, dan masyarakat dalam mengantisipasi potensi banjir secara cepat.
+            Platform ini menggabungkan data ketinggian air, curah hujan, radar cuaca, satelit, dan pemodelan
+            machine learning untuk menampilkan kondisi banjir hingga tingkat kecamatan.
+        </p>
+        <p style="line-height:1.6; margin-top:1.2rem; color:var(--text-muted);">
+            Floodzy dikembangkan oleh <strong>Rahmat Yudi Burhanudin</strong>, seorang software engineer dan peneliti
+            yang berfokus pada pemanfaatan data dan teknologi untuk kesiapsiagaan bencana. Proyek ini lahir dari
+            keprihatinan terhadap banjir berulang di kota-kota besar Indonesia dan keterbatasan informasi yang
+            dapat digunakan warga dan instansi untuk mengambil keputusan cepat.
+        </p>
+        <p style="line-height:1.6; margin-top:1.2rem; color:var(--text-muted);">
+            Misi Floodzy adalah menyediakan akses informasi banjir yang transparan, realtime, dan mudah dipahami.
+            Ke depannya, Floodzy akan terhubung ke sistem notifikasi otomatis, integrasi sirine komunitas,
+            serta API terbuka agar lembaga dan developer dapat membangun solusi turunan berbasis data bencana.
+        </p>
+    </section>
+
+    <!-- TRUST STRIP -->
+    <section class="container"
+        style="padding: 2rem 0; text-align: center; border-bottom: 1px solid rgba(255,255,255,0.1); margin-bottom: 2rem;">
+        <p class="mono text-muted" style="font-size: 0.9rem; letter-spacing: 1px; text-transform: uppercase;"> Realtime
+            Telemetry • AI Forecasting • Kecamatan-Level Coverage • Alert-First UX </p>
+    </section>
+    <!-- WHAT IS FLOODZY -->
+    <section class="container" style="padding: 4rem 0; text-align: center; max-width: 900px;">
+        <h2 style="margin-bottom: 1.5rem;">Sistem Peringatan Dini Banjir</h2>
+        <p class="text-muted" style="font-size: 1.25rem; margin-bottom: 3rem;"> Floodzy adalah platform prediksi
+            realtime
+            yang dibangun untuk BPBD, Instansi Pemerintah, dan Warga. Kami menggabungkan sensor darat, data satelit, dan
+            machine learning untuk memvisualisasikan ancaman sebelum terjadi. </p>
+        <!-- How It Works Cards -->
+        <div
+            style="display: grid; grid-template-columns: repeat(auto-fit, minmax(250px, 1fr)); gap: 2rem; text-align: left;">
+            <div
+                style="background: rgba(0, 198, 255, 0.05); border: 1px solid rgba(0, 198, 255, 0.2); padding: 2rem; border-radius: 8px;">
+                <div class="mono text-cyan" style="font-size: 1.5rem; margin-bottom: 1rem;">01. DETEKSI</div>
+                <p class="text-muted">Sensor IoT di berbagai saluran air mengirimkan data ketinggian air dan curah hujan
+                    dengan
+                    <strong>pembaruan sub-detik</strong>.
+                </p>
+            </div>
+            <div
+                style="background: rgba(0, 198, 255, 0.05); border: 1px solid rgba(0, 198, 255, 0.2); padding: 2rem; border-radius: 8px;">
+                <div class="mono text-cyan" style="font-size: 1.5rem; margin-bottom: 1rem;">02. PREDIKSI</div>
+                <p class="text-muted">Model AI kami memproses topografi dan hidrologi untuk memprakirakan penyebaran
+                    banjir.</p>
+            </div>
+            <div
+                style="background: rgba(255, 59, 48, 0.05); border: 1px solid rgba(255, 59, 48, 0.3); padding: 2rem; border-radius: 8px;">
+                <div class="mono text-red" style="font-size: 1.5rem; margin-bottom: 1rem;">03. PERINGATAN</div>
+                <p class="text-muted">Peringatan instan dikirim ke pemangku kepentingan dan warga di zona terdampak.</p>
+            </div>
+        </div>
+    </section>
+    <!-- SCROLLYTELLING STAGE -->
+    <div id="director-stage">
+        <div id="sticky-viewport">
+            <!-- HUD -->
+            <div id="hud-overlay">
+                <div class="mono text-cyan" id="zone-display" style="background: #000; padding: 5px 10px;">ZONA:
+                    MEMANTAU</div>
+                <h2 id="status-display" style="font-size: 2.5rem; margin-top: 10px;">NORMAL</h2>
+            </div>
+            <!-- CITY -->
+            <div class="skyline"></div>
+            <!-- PROPS -->
+            <div class="scenery-obj" id="obj-fence">
+                <svg viewBox="0 0 150 60">
+                    <path
+                        d="M10,60 L10,10 M30,60 L30,10 M50,60 L50,10 M70,60 L70,10 M90,60 L90,10 M110,60 L110,10 M130,60 L130,10 M0,20 L150,20 M0,50 L150,50"
+                        stroke="#555" stroke-width="2" />
+                </svg>
+            </div>
+            <div class="scenery-obj" id="obj-tree">
+                <svg viewBox="0 0 80 180">
+                    <path d="M40,180 L40,100 M40,100 L10,60 M40,100 L70,60 M40,80 L20,40 M40,80 L60,40" stroke="#555"
+                        stroke-width="4" />
+                    <circle cx="40" cy="40" r="30" fill="#232736" stroke="#555" />
+                </svg>
+            </div>
+            <!-- SINKING TEXT -->
+            <div id="sinking-text-container">
+                <span class="sink-char">F</span>
+                <span class="sink-char">L</span>
+                <span class="sink-char">O</span>
+                <span class="sink-char">O</span>
+                <span class="sink-char">D</span>
+                <span class="sink-char">Z</span>
+                <span class="sink-char">Y</span>
+            </div>
+            <!-- RESCUE SYSTEM -->
+            <div id="rescue-cord" title="Evacuation Window Open"></div>
+            <div id="rescue-drone">
+                <svg width="60" height="40" viewBox="0 0 60 40">
+                    <path d="M10,20 L50,20 M0,10 L20,20 L0,30 M60,10 L40,20 L60,30" stroke="#333" fill="none" />
+                    <circle cx="30" cy="20" r="5" fill="#111" stroke="var(--cyan)" />
+                    <circle cx="30" cy="20" r="2" class="drone-light" />
+                </svg>
+            </div>
+            <!-- WATER & GRID -->
+            <div class="water-overlay" id="water-level">
+                <canvas id="wave-canvas"></canvas>
+                <!-- FISH -->
+                <canvas id="fish-canvas" aria-hidden="true"></canvas>
+                <div class="water-noise"></div>
+            </div>
+            <div class="system-grid-overlay" id="intervention-grid"></div>
+        </div>
+    </div>
+    <!-- SCENE 8: SPLIT NARRATIVE -->
+    <section id="split-section">
+        <div class="split-content split-left">
+            <h3 class="text-red">KEKACAUAN MANUAL</h3>
+            <p class="text-muted" style="font-size: 1.5rem; max-width: 400px; margin-left: auto;"> "Data yang terpecah
+                menunda respons kritis. Pengamatan manual menciptakan titik buta saat waktu sangat berharga." </p>
+        </div>
+        <div class="split-divider"></div>
+        <div class="split-content split-right">
+            <h3 class="text-cyan">KEJELASAN SISTEM</h3>
+            <p style="font-size: 1.5rem; max-width: 400px;"> "Fusi sensor real-time menghilangkan latensi. Floodzy
+                memprediksi besarnya dampak sebelum badai memuncak." </p>
+        </div>
+    </section>
+    <!-- SCENE: MID HERO (PREDICT SURGE) -->
+    <!-- SCENE: MID HERO (PREDICT SURGE) -->
+    <section id="predict-section" class="container"
+        style="padding: 4rem 0 6rem 0; position: relative; z-index: 20; text-align: center;">
+        <div class="mono text-cyan" style="margin-bottom: 1.5rem; letter-spacing: 2px;">:: STATUS SISTEM: ONLINE</div>
+        <h2
+            style="font-size: clamp(3.5rem, 6vw, 5.5rem); line-height: 1.1; margin-bottom: 2rem; background: var(--main-gradient); background-clip: text; -webkit-background-clip: text; -webkit-text-fill-color: transparent;">
+            Prediksi
+            Lonjakan.<br> <span style="color: #666; -webkit-text-fill-color: #666;">Sebelum Terjadi.</span> </h2>
+        <p class="text-muted" style="font-size: 1.25rem; max-width: 700px; margin: 0 auto 3rem; line-height: 1.6;">
+            Intelijen banjir canggih untuk iklim yang berubah. Menggabungkan altimetri satelit, prakiraan ML, dan
+            telemetri darat real-time. </p>
+        <a href="#" class="btn"
+            style="padding: 1rem 2.5rem; border-color: var(--cyan); background: rgba(0, 198, 255, 0.1);"> LUNCURKAN
+            KONSOL
+            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"
+                style="margin-left:8px;">
+                <path d="M7 17l9.2-9.2M17 17V7H7" />
+            </svg> </a>
+    </section>
+    <!-- SCENE 9: PLAYGROUND -->
+    <section class="container" style="padding: 6rem 0;">
+        <div class="mono text-cyan">> AREA_SIMULASI</div>
+        <h2>Kendalikan Situasi</h2>
+        <div class="playground-container">
+            <div class="tech-corner tl"></div>
+            <div class="tech-corner tr"></div>
+            <div class="tech-corner bl"></div>
+            <div class="tech-corner br"></div>
+            <div id="sim-map">
+                <div class="radar-scan"></div>
+                <div class="map-hud"> LAT: -6.2088<br>LON: 106.8456<br>SENSOR: <span id="sensor-count">12</span>
+                    AKTIF<br>SYNC: AKTIF </div>
+            </div>
+            <div>
+                <div style="margin-bottom: 2rem;">
+                    <div style="display: flex; justify-content: space-between;"><span class="mono">INTENSITAS
+                            HUJAN</span><span class="mono text-cyan" id="rain-val">20%</span></div>
+                    <input type="range" id="rain-slider" min="0" max="100" value="20"
+                        style="width: 100%; margin-top: 10px;">
+                </div>
+                <div>
+                    <div style="display: flex; justify-content: space-between;"><span class="mono">LEVEL
+                            SUNGAI</span><span class="mono text-red" id="river-val">AMAN</span></div>
+                    <input type="range" id="river-slider" min="0" max="100" value="10"
+                        style="width: 100%; margin-top: 10px;">
+                </div>
+                <p class="mono text-muted" style="font-size: 0.8rem; margin-top: 2rem;">GESER SLIDER UNTUK SIMULASI
+                    UMPAN BALIK SENSOR.</p>
+            </div>
+        </div>
+    </section>
+    <!-- SCENE 10: DEPLOYMENT STATS (RESTORED) -->
+    <section class="container" style="padding: 6rem 0; position: relative; z-index: 20;">
+        <div class="stats-grid">
+            <!-- Left: Narrative -->
+            <div>
+                <div class="mono text-cyan" style="margin-bottom: 1rem;">01 :: MASALAH</div>
+                <h2
+                    style="font-size: clamp(2.5rem, 5vw, 3.5rem); margin-bottom: 3rem; line-height: 1.1; background: var(--main-gradient); background-clip: text; -webkit-background-clip: text; -webkit-text-fill-color: transparent;">
+                    Air Tak
+                    Menunggu.<br>Anda Pun Jangan.</h2>
+                <div
+                    style="background: rgba(255,255,255,0.03); border-left: 2px solid #555; padding: 2rem; margin-bottom: 2rem;">
+                    <h4 style="margin-bottom: 0.5rem; color: #FFF;">Latensi Membunuh Respons</h4>
+                    <p class="text-muted">Pengukur manual tradisional memiliki jeda 4 jam. Floodzy memangkas ini menjadi
+                        <strong>pembaruan sub-detik</strong> menggunakan uplink IoT langsung.
+                    </p>
+                </div>
+                <div style="background: rgba(255,255,255,0.03); border-left: 2px solid #555; padding: 2rem;">
+                    <h4 style="margin-bottom: 0.5rem; color: #FFF;">Ancaman Tak Terlihat</h4>
+                    <p class="text-muted">Prakiraan hujan bukan prakiraan banjir. Kami memodelkan hidrologi medan untuk
+                        memprediksi
+                        dampak, bukan hanya curah hujan.</p>
+                </div>
+            </div>
+            <!-- Right: Stats Panel -->
+            <div
+                style="background: #0B0D13; border: 1px solid rgba(0, 198, 255, 0.2); padding: 3rem; border-radius: 4px; position: relative;">
+                <div class="mono text-cyan" style="margin-bottom: 2rem;">> STATISTIK_PENYEBARAN</div>
+                <div
+                    style="font-size: clamp(4rem, 8vw, 6rem); font-weight: 800; line-height: 1; font-family: var(--font-display); background: var(--main-gradient); background-clip: text; -webkit-background-clip: text; -webkit-text-fill-color: transparent;">
+                    3j</div>
+                <div class="text-muted" style="margin-bottom: 4rem;">Waktu Peringatan Dini</div>
+                <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 1rem;">
+                    <div
+                        style="background: rgba(0, 198, 255, 0.05); border-bottom: 2px solid var(--cyan); padding: 1.5rem; height: 100px; display: flex; align-items: end;">
+                        <span class="mono text-cyan" style="font-size: 0.8rem;">PENGUKUR_SUNGAI</span>
+                    </div>
+                    <div
+                        style="background: rgba(255, 59, 48, 0.05); border-bottom: 2px solid var(--red); padding: 1.5rem; height: 100px; display: flex; align-items: end;">
+                        <span class="mono text-red" style="font-size: 0.8rem;">RISIKO_BAHAYA</span>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <style>
+            .stats-grid {
+                display: grid;
+                grid-template-columns: 1fr 1fr;
+                gap: 4rem;
+                align-items: start;
+            }
+
+            @media (max-width: 768px) {
+                .stats-grid {
+                    grid-template-columns: 1fr;
+                    gap: 2rem;
+                }
+            }
+        </style>
+    </section>
+    <!-- SCENE 11: SUNRISE (UPDATED WITH QUIET MOMENT) -->
+    <section id="final-sunrise">
+        <div class="sun-orb"></div>
+        <div class="final-network"></div>
+        <div class="final-node"></div>
+        <div class="container" style="position: relative; z-index: 20;">
+            <p class="mono" style="font-size: 1.2rem; margin-bottom: 0.5rem;">ANDA TIDAK BISA MENGHENTIKAN HUJAN.</p>
+            <p class="mono text-red" style="font-size: 1.2rem; margin-bottom: 2rem;">TAPI ANDA BISA MELIHATNYA DATANG.
+            </p>
+            <p class="mono text-cyan" style="margin-top:1rem; font-size: 1.5rem; max-width: 600px; margin: 0 auto;">
+                FLOODZY ADALAH PEMBEDA ANTARA PERINGATAN DAN KEHILANGAN. </p>
+            <div style="display: flex; gap: 1rem; justify-content: center; margin-top: 3rem;">
+                <a href="/dashboard" class="btn" onclick="localStorage.setItem('floodzy_seen', 'yes')"
+                    style="background: var(--main-gradient); border: none; color: white;">BUKA
+                    DASHBOARD</a>
+                <a href="/contact" class="btn" style="border-color: rgba(255,255,255,0.3); color: #fff;">MINTA
+                    DEMO</a>
+            </div>
+        </div>
+    </section>
+    <footer class="ops-footer">
+        <div class="container">
+            <div class="footer-grid">
+                <div>
+                    <div class="logo mono text-cyan" style="margin-bottom: 1rem;">FLOODZY_INTEL</div>
+                    <p class="text-muted" style="font-size: 0.9rem; max-width: 300px;"> Sistem prediksi hidrologi
+                        canggih untuk ketahanan kota. </p>
+                    <div style="margin-top: 1rem; display: flex; align-items: center;">
+                        <span class="system-status-light"></span>
+                        <span class="mono" style="font-size: 0.8rem; color: var(--cyan);">SISTEM OPERASIONAL</span>
+                    </div>
+                </div>
+                <div>
+                    <h4 class="mono text-main" style="margin-bottom: 1rem;">// NAVIGASI</h4>
+                    <a href="/" class="footer-link">BERANDA</a>
+                    <a href="/" class="footer-link">DASHBOARD_LIVE</a>
+                    <a href="/prakiraan-cuaca" class="footer-link">INTEL_CUACA</a>
+                    <a href="/privacy.html" class="footer-link">KEBIJAKAN_PRIVASI</a>
+                    <a href="/data-source.html" class="footer-link">SUMBER_DATA</a>
+                    <a href="#" onclick="localStorage.removeItem('floodzy_seen'); location.reload();"
+                        class="footer-link" style="color: #666; margin-top: 1rem;">↺ ULANG_INTRO</a>
+                </div>
+                <div>
+                    <h4 class="mono text-main" style="margin-bottom: 1rem;">// HUBUNGKAN</h4>
+                    <a href="#" class="footer-link">REPO_GITHUB</a>
+                    <a href="#" class="footer-link">KONTAK_MARKAS</a>
+                    <p class="mono text-muted" style="margin-top: 1rem; font-size: 0.8rem;"> JAKARTA • INDONESIA
+                        <br>LAT: -6.2088 | LON: 106.8456
+                    </p>
+                </div>
+            </div>
+            <div style="border-top: 1px solid rgba(255,255,255,0.1); padding-top: 1.5rem; text-align: center;">
+                <p class="mono text-muted" style="font-size: 0.75rem;"> © 2026 FLOODZY SYSTEMS. HAK CIPTA DILINDUNGI. |
+                    <span class="text-cyan">KONEKSI_AMAN_TERHUBUNG</span>
+                </p>
+            </div>
+        </div>
+    </footer>
+    <script src="js/landing.js"></script>
+</body>
+
+</html>

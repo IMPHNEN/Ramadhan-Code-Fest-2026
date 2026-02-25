@@ -3,8 +3,8 @@ import { faScaleBalanced } from '@fortawesome/free-solid-svg-icons';
 
 export default function Header() {
   return (
-    <div className="text-center mb-6 pb-4 border-b border-gray-200">
-      <h1 className="text-xl font-bold text-gray-800 mb-1 flex items-center justify-center gap-2">
+    <div className="mb-6">
+      <h1 className="text-xl font-bold text-gray-800 mb-1 flex items-center gap-2">
         <FontAwesomeIcon icon={faScaleBalanced} className="text-gray-600" />
         Kalkulator Akhirat
       </h1>

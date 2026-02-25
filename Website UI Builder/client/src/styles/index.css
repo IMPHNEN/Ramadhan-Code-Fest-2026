@@ -1,0 +1,42 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+:root {
+  color-scheme: dark;
+}
+
+* {
+  box-sizing: border-box;
+}
+
+body {
+  margin: 0;
+  font-family: 'DM Sans', 'Segoe UI', sans-serif;
+}
+
+.builder-scroll::-webkit-scrollbar {
+  width: 18px;
+  height: 18px;
+}
+
+.builder-scroll::-webkit-scrollbar-track {
+  background: #0b1220;
+  border-radius: 10px;
+}
+
+.builder-scroll::-webkit-scrollbar-thumb {
+  background: #3a4456;
+  border-radius: 10px;
+  border: 4px solid #0b1220;
+}
+
+.builder-scroll::-webkit-scrollbar-thumb:hover {
+  background: #4a5a73;
+}
+
+.builder-grid {
+  background-image:
+    linear-gradient(to right, rgba(100, 116, 139, 0.12) 1px, transparent 1px),
+    linear-gradient(to bottom, rgba(100, 116, 139, 0.12) 1px, transparent 1px);
+}

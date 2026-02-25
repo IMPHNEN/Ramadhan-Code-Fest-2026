@@ -1,0 +1,228 @@
+<!DOCTYPE html>
+<html lang="id">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Tentang Floodzy | Sistem Peringatan Banjir Indonesia</title>
+    <meta name="description"
+        content="Pelajari lebih lanjut tentang Floodzy, misi kami, dan teknologi di balik sistem peringatan dini banjir realtime Indonesia.">
+
+    <!-- Google Fonts -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link
+        href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@300;400&family=Outfit:wght@300;400;600;800&family=Space+Grotesk:wght@300;400;600&display=swap"
+        rel="stylesheet">
+
+    <style>
+        :root {
+            --bg-void: #050507;
+            --text-main: #E1E3E8;
+            --text-muted: #9499A6;
+            --cyan: #2EF2FF;
+            --cyan-glow: rgba(46, 242, 255, 0.4);
+            --font-body: 'Space Grotesk', system-ui, sans-serif;
+            --font-display: 'Outfit', system-ui, sans-serif;
+            --font-mono: 'JetBrains Mono', monospace;
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            background-color: var(--bg-void);
+            color: var(--text-main);
+            font-family: var(--font-body);
+            line-height: 1.6;
+        }
+
+        .container {
+            max-width: 900px;
+            margin: 0 auto;
+            padding: 2rem;
+        }
+
+        header {
+            padding: 2rem 0;
+            border-bottom: 1px solid rgba(255, 255, 255, 0.05);
+            margin-bottom: 4rem;
+        }
+
+        .nav {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .logo {
+            font-family: var(--font-display);
+            font-weight: 800;
+            font-size: 1.5rem;
+            color: #FFF;
+            text-decoration: none;
+        }
+
+        .nav-links a {
+            color: var(--text-muted);
+            text-decoration: none;
+            margin-left: 2rem;
+            font-family: var(--font-mono);
+            font-size: 0.9rem;
+            transition: color 0.3s;
+        }
+
+        .nav-links a:hover {
+            color: var(--cyan);
+        }
+
+        h1 {
+            font-family: var(--font-display);
+            font-size: clamp(2.5rem, 5vw, 4rem);
+            margin-bottom: 2rem;
+            line-height: 1.1;
+        }
+
+        h2 {
+            font-family: var(--font-display);
+            font-size: 2rem;
+            margin-top: 4rem;
+            margin-bottom: 1.5rem;
+            color: #FFF;
+        }
+
+        p {
+            color: var(--text-muted);
+            margin-bottom: 1.5rem;
+            font-size: 1.1rem;
+        }
+
+        .highlight {
+            color: var(--cyan);
+        }
+
+        .profile-card {
+            background: rgba(255, 255, 255, 0.02);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            padding: 2rem;
+            margin-top: 3rem;
+            border-radius: 8px;
+        }
+
+        .tech-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 1.5rem;
+            margin-top: 2rem;
+        }
+
+        .tech-item {
+            background: rgba(46, 242, 255, 0.03);
+            border: 1px solid rgba(46, 242, 255, 0.1);
+            padding: 1.5rem;
+        }
+
+        .tech-title {
+            font-family: var(--font-mono);
+            color: var(--cyan);
+            margin-bottom: 0.5rem;
+            font-size: 0.9rem;
+        }
+
+        footer {
+            margin-top: 6rem;
+            padding: 2rem 0;
+            text-align: center;
+            border-top: 1px solid rgba(255, 255, 255, 0.05);
+            font-family: var(--font-mono);
+            font-size: 0.8rem;
+            color: #555;
+        }
+    </style>
+</head>
+
+<body>
+
+    <header>
+        <div class="container nav">
+            <a href="/" class="logo">FLOODZY</a>
+            <div class="nav-links">
+                <a href="/">HOME</a>
+                <a href="/peta-banjir">DASHBOARD</a>
+            </div>
+        </div>
+    </header>
+
+    <main class="container">
+        <h1>Membangun <span class="highlight">Resiliensi Banjir</span> dengan Data & AI.</h1>
+
+        <p>
+            <strong>Floodzy</strong> adalah inisiatif independen yang bertujuan menyediakan sistem peringatan dini
+            banjir yang demokratis, cepat, dan akurat untuk Indonesia. Platform ini menghubungkan titik-titik data yang
+            sebelumnya terpisah—sensor sungai, radar hujan, dan laporan warga—menjadi satu tampilan komprehensif.
+        </p>
+
+        <h2>Latar Belakang</h2>
+        <p>
+            Banjir di kota-kota besar Indonesia seringkali datang dengan peringatan yang minim atau terlambat. Data
+            ketinggian air seringkali tersedia, namun tersebar di berbagai platform instansi yang sulit diakses oleh
+            masyarakat umum dalam keadaan darurat.
+        </p>
+        <p>
+            Floodzy hadir untuk menjembatani kesenjangan tersebut. Kami percaya bahwa <strong>informasi keselamatan
+                adalah hak publik</strong>. Dengan memanfaatkan teknologi modern, kami dapat memberikan estimasi "Lead
+            Time" (waktu bersiap) yang lebih panjang bagi warga untuk menyelamatkan diri dan aset berharga.
+        </p>
+
+        <h2>Siapa Dibalik Floodzy?</h2>
+        <div class="profile-card">
+            <div style="display: flex; gap: 1.5rem; align-items: flex-start; flex-wrap: wrap;">
+                <div>
+                    <h3 style="font-family: var(--font-display); font-size: 1.5rem; margin-bottom: 0.5rem;">Rahmat Yudi
+                        Burhanudin</h3>
+                    <div class="mono highlight" style="font-size: 0.9rem; margin-bottom: 1rem;">FOUNDER & LEAD ENGINEER
+                    </div>
+                    <p style="font-size: 1rem; margin-bottom: 0;">
+                        Software Engineer dan peneliti dengan minat mendalam pada <em>IoT (Internet of Things)</em> dan
+                        <em>Geospatial Data Science</em>. Rahmat mendedikasikan Floodzy sebagai proyek "Tech for Good"
+                        untuk memberikan kontribusi nyata bagi mitigasi bencana di Indonesia.
+                    </p>
+                    <div style="margin-top: 1.5rem;">
+                        <a href="mailto:dewarahmat12334@gmail.com"
+                            style="color: #FFF; text-decoration: none; border-bottom: 1px solid var(--cyan);">dewarahmat12334@gmail.com</a>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <h2>Teknologi Kami</h2>
+        <div class="tech-grid">
+            <div class="tech-item">
+                <div class="tech-title">DATA FUSION</div>
+                <div style="color: #bbb; font-size: 0.9rem;">Integrasi data telemetri pintu air, curah hujan satelit,
+                    dan laporan kerumunan (crowdsourcing).</div>
+            </div>
+            <div class="tech-item">
+                <div class="tech-title">PREDICTIVE AI</div>
+                <div style="color: #bbb; font-size: 0.9rem;">Model Machine Learning untuk memprediksi kenaikan muka air
+                    3-6 jam ke depan.</div>
+            </div>
+            <div class="tech-item">
+                <div class="tech-title">REALTIME ALERT</div>
+                <div style="color: #bbb; font-size: 0.9rem;">Notifikasi push dan penyebaran informasi via API terbuka.
+                </div>
+            </div>
+        </div>
+
+    </main>
+
+    <footer>
+        &copy; 2026 FLOODZY SYSTEM. JAKARTA, ID.
+    </footer>
+
+</body>
+
+</html>

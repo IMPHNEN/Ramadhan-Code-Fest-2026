@@ -1,0 +1,10 @@
+node_modules
+dist
+.env
+*.log
+.DS_Store
+client/node_modules
+server/node_modules
+shared/node_modules
+
+plan.md

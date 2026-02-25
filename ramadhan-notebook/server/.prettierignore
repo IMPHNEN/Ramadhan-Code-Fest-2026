@@ -1,0 +1,10 @@
+node_modules
+dist
+package-lock.json
+package.json
+.env
+.env.example
+ts-config.json
+eslint.config.mjs
+jest.config.ts
+.gitignore

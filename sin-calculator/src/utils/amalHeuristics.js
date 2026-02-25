@@ -3,6 +3,17 @@ export const AMAL_TYPE = {
   DOSA: 'dosa'
 };
 
+export const getRandomHadist = () => {
+  const hadists = [
+    "Setiap anak Adam pasti pernah berbuat salah, dan sebaik-baik orang yang berbuat salah adalah mereka yang bertaubat. (HR. Tirmidzi)",
+    "Jauhilah oleh kalian dosa-dosa kecil, karena sesungguhnya dosa-dosa kecil itu jika menumpuk pada diri seseorang niscaya akan membinasakannya. (HR. Ahmad)",
+    "Sesungguhnya Allah menerima taubat hamba-Nya selama nyawanya belum sampai ke tenggorokan. (HR. Tirmidzi)",
+    "Bertaubatlah kalian kepada Allah dan mohonlah ampunan kepada-Nya, sesungguhnya aku bertaubat dalam sehari sebanyak seratus kali. (HR. Muslim)",
+    "Barangsiapa yang berbuat keburukan atau menganiaya dirinya sendiri, kemudian ia memohon ampun kepada Allah, niscaya ia akan mendapati Allah Maha Pengampun. (QS. An-Nisa: 110)"
+  ];
+  return hadists[Math.floor(Math.random() * hadists.length)];
+};
+
 export const calculateWeight = (text, type) => {
   const lowerText = text.toLowerCase();
   let baseWeight = 5;

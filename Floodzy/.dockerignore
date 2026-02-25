@@ -1,0 +1,25 @@
+# .dockerignore
+
+# Git files
+.git
+.gitignore
+
+# Docker files
+Dockerfile
+.dockerignore
+
+# Node modules
+node_modules
+
+# Next.js build output folder
+.next
+
+# Local environment variables
+.env.local
+
+# Test and config files
+*.log
+eslint-errors.txt
+ts-errors.txt
+commit_message.txt
+README.md
