@@ -100,3 +100,6 @@
 [submodule "todo"]
 	path = todo
 	url = https://github.com/putra4648/todo
+[submodule "Scanner"]
+	path = Scanner
+	url = https://github.com/Damarcreative/Scanner.git
