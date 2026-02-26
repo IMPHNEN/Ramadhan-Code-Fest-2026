@@ -1,0 +1,2 @@
+Ini adalah file static dari folder public/.
+Jika kamu bisa baca ini, berarti fitur Static Assets berfungsi! 🚀
