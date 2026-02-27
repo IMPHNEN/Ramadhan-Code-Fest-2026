@@ -15,7 +15,7 @@
                             rounded-md  px-3 py-2 text-sm font-medium text-white">Home</a>
 
 
-                        <a href="/blog" class="{{ request()->is('blog') ?
+                        <a href="/posts" class="{{ request()->is('posts') ?
     'bg-gray-950/50 text-white' : 'text-gray-300 hover:bg-white/5 hover:text-white'
                          }}
                             rounded-md  px-3 py-2 text-sm font-medium text-white">Blog</a>
@@ -83,18 +83,40 @@
         </div>
     </div>
 
+
+
     <el-disclosure id="mobile-menu" hidden class="block md:hidden">
         <div class="space-y-1 px-2 pt-2 pb-3 sm:px-3">
             <!-- Current: "bg-gray-950/50 text-white", Default: "text-gray-300 hover:bg-white/5 hover:text-white" -->
-            <a href="/" aria-current="page"
-                class="block rounded-md bg-gray-950/50 px-3 py-2 text-base font-medium text-white">Home</a>
-            <a href="/blog"
-                class="block rounded-md px-3 py-2 text-base font-medium text-gray-300 hover:bg-white/5 hover:text-white">Blog</a>
-            <a href="/about"
-                class="block rounded-md px-3 py-2 text-base font-medium text-gray-300 hover:bg-white/5 hover:text-white">About</a>
-            <a href="/contact"
-                class="block rounded-md px-3 py-2 text-base font-medium text-gray-300 hover:bg-white/5 hover:text-white">Contact</a>
+            <a href="/" aria-current="page" class="{{ request()->is('/') ?
+    'bg-gray-950/50 text-white' : 'text-gray-300 hover:bg-white/5 hover:text-white'
+                         }}
+                            rounded-md  px-3 py-2 text-sm font-medium text-white">Home</a>
+
+
+            <a href="/posts" class="{{ request()->is('posts') ?
+    'bg-gray-950/50 text-white' : 'text-gray-300 hover:bg-white/5 hover:text-white'
+                         }}
+                            rounded-md  px-3 py-2 text-sm font-medium text-white">Blog</a>
+
+            <a href="/about" class="{{ request()->is('about') ?
+    'bg-gray-950/50 text-white' : 'text-gray-300 hover:bg-white/5 hover:text-white'
+                         }}
+                            rounded-md  px-3 py-2 text-sm font-medium text-white">About</a>
+
+
+            <a href="/contact" class="{{ request()->is('contact') ?
+    'bg-gray-950/50 text-white' : 'text-gray-300 hover:bg-white/5 hover:text-white'
+                         }}
+                            rounded-md  px-3 py-2 text-sm font-medium text-white">Contact</a>
         </div>
+
+
+
+
+
+
+
         <div class="border-t border-white/10 pt-4 pb-3">
             <div class="flex items-center px-5">
                 <div class="shrink-0">

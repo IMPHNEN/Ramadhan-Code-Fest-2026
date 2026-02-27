@@ -6,7 +6,7 @@ use Closure;
 use Illuminate\Contracts\View\View;
 use Illuminate\View\Component;
 
-class navlink extends Component
+class NavLink extends Component
 {
     /**
      * Create a new component instance.
@@ -21,6 +21,6 @@ class navlink extends Component
      */
     public function render(): View|Closure|string
     {
-        return view('components.navlink');
+        return view('components.nav-link');
     }
 }
