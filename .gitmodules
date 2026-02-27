@@ -103,3 +103,6 @@
 [submodule "Scanner"]
 	path = Scanner
 	url = https://github.com/Damarcreative/Scanner.git
+[submodule "shill"]
+	path = shill
+	url = https://github.com/milio48/shill.git
