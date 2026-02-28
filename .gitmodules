@@ -109,3 +109,6 @@
 [submodule "tailwindOCD"]
 	path = tailwindOCD
 	url = https://github.com/suryami62/tailwindOCD.git
+[submodule "modules/nanti-aja"]
+	path = modules/nanti-aja
+	url = https://github.com/vathmos/nanti-aja
