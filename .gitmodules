@@ -112,6 +112,9 @@
 [submodule "nanti-aja"]
 	path = nanti-aja
 	url = https://github.com/vathmos/nanti-aja.git
+[submodule "url-shortening-service"]
+	path = url-shortening-service
+	url = https://github.com/Dams168/url-shortening-service
 [submodule "satset-ai"]
 	path = satset-ai
 	url = https://github.com/RifkiFrds/satset-ai.git
