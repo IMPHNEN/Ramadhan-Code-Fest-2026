@@ -124,3 +124,6 @@
 [submodule "Check-Cortisol"]
 	path = Check-Cortisol
 	url = https://github.com/IlhamApriansyah/Check-Cortisol/
+[submodule "ngetik-aja-dulu"]
+	path = ngetik-aja-dulu
+	url = https://github.com/riizlaah/ngetik-aja-dulu
