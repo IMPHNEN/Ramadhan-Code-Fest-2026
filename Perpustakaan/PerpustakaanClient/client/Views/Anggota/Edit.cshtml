@@ -1,0 +1,56 @@
+@model client.Models.AnggotaModel
+@{
+    ViewBag.Title = "Edit Anggota";
+}
+
+<h2>Edit Anggota</h2>
+
+@if (ViewBag.ErrorMessage != null)
+{
+    <div class="alert alert-danger alert-dismissible">
+        <button type="button" class="close" data-dismiss="alert">&times;</button>
+        <i class="glyphicon glyphicon-exclamation-sign"></i> <strong>Error:</strong> @ViewBag.ErrorMessage
+    </div>
+}
+
+@using (Html.BeginForm())
+{
+    <div class="form-horizontal">
+        @Html.HiddenFor(m => m.id_anggota)
+        
+        <div class="form-group">
+            <label class="control-label col-md-2">Nama Anggota</label>
+            <div class="col-md-10">
+                @Html.TextBoxFor(m => m.nama_anggota, new { @class = "form-control" })
+            </div>
+        </div>
+
+        <div class="form-group">
+            <label class="control-label col-md-2">Alamat</label>
+            <div class="col-md-10">
+                @Html.TextAreaFor(m => m.alamat, new { @class = "form-control", rows = 3 })
+            </div>
+        </div>
+
+        <div class="form-group">
+            <label class="control-label col-md-2">Telepon</label>
+            <div class="col-md-10">
+                @Html.TextBoxFor(m => m.telp, new { @class = "form-control" })
+            </div>
+        </div>
+
+        <div class="form-group">
+            <label class="control-label col-md-2">Tanggal Daftar</label>
+            <div class="col-md-10">
+                @Html.TextBoxFor(m => m.tanggal_daftar, "{0:yyyy-MM-dd}", new { @class = "form-control", type = "date" })
+            </div>
+        </div>
+
+        <div class="form-group">
+            <div class="col-md-offset-2 col-md-10">
+                <input type="submit" value="Update" class="btn btn-primary" />
+                <a href="@Url.Action("Index")" class="btn btn-default">Kembali</a>
+            </div>
+        </div>
+    </div>
+}

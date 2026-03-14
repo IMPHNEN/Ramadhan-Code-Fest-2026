@@ -1,0 +1,131 @@
+@model client.Models.PeminjamanModel
+@{
+    ViewBag.Title = "Tambah Peminjaman";
+}
+
+<h2>Tambah Peminjaman Baru</h2>
+
+@if (ViewBag.ErrorMessage != null)
+{
+    <div class="alert alert-danger alert-dismissible">
+        <button type="button" class="close" data-dismiss="alert">&times;</button>
+        <i class="glyphicon glyphicon-exclamation-sign"></i> <strong>Error:</strong> @ViewBag.ErrorMessage
+    </div>
+}
+
+@using (Html.BeginForm())
+{
+    <div class="form-horizontal">
+        <div class="form-group">
+            <label class="control-label col-md-2">Petugas</label>
+            <div class="col-md-10">
+                <input type="text" class="form-control" value="@Session["nama_user"]" readonly />
+                <small class="text-muted">Petugas yang sedang login (otomatis)</small>
+            </div>
+        </div>
+
+        <div class="form-group">
+            <label class="control-label col-md-2">Anggota</label>
+            <div class="col-md-10">
+                <select id="select_anggota" name="id_anggota" class="form-control" style="width: 100%;">
+                    <option value="">-- Ketik nama anggota untuk mencari --</option>
+                </select>
+                <small class="text-muted">Ketik nama anggota untuk mencari dan memilih</small>
+            </div>
+        </div>
+
+        <div class="form-group">
+            <label class="control-label col-md-2">Buku</label>
+            <div class="col-md-10">
+                <select id="select_buku" name="id_buku" class="form-control" style="width: 100%;">
+                    <option value="">-- Ketik judul buku untuk mencari --</option>
+                </select>
+                <small class="text-muted">Ketik judul buku untuk mencari dan memilih</small>
+            </div>
+        </div>
+
+        <div class="form-group">
+            <label class="control-label col-md-2">Tanggal Pinjam</label>
+            <div class="col-md-10">
+                @Html.TextBoxFor(m => m.tanggal_pinjam, "{0:yyyy-MM-dd}", new { @class = "form-control", type = "date", @readonly = "readonly" })
+                <small class="text-muted">Tanggal pinjam otomatis (hari ini)</small>
+            </div>
+        </div>
+
+        <div class="form-group">
+            <label class="control-label col-md-2">Tanggal Kembali</label>
+            <div class="col-md-10">
+                @Html.TextBoxFor(m => m.tanggal_kembali, "{0:yyyy-MM-dd}", new { @class = "form-control", type = "date" })
+                <small class="text-muted">Batas waktu pengembalian buku</small>
+            </div>
+        </div>
+
+        <div class="form-group">
+            <div class="col-md-offset-2 col-md-10">
+                <input type="submit" value="Simpan" class="btn btn-success" />
+                <a href="@Url.Action("Index")" class="btn btn-default">Kembali</a>
+            </div>
+        </div>
+    </div>
+}
+
+@section Scripts {
+    <!-- Select2 CSS -->
+    <link href="https://cdn.jsdelivr.net/npm/select2@4.1.0-rc.0/dist/css/select2.min.css" rel="stylesheet" />
+    <!-- Select2 JS -->
+    <script src="https://cdn.jsdelivr.net/npm/select2@4.1.0-rc.0/dist/js/select2.min.js"></script>
+    
+    <script>
+        $(document).ready(function() {
+            // Set tanggal pinjam ke hari ini (readonly, tidak bisa diubah)
+            var today = new Date().toISOString().split('T')[0];
+            $('#tanggal_pinjam').val(today);
+            
+            // Inisialisasi Select2 untuk Anggota dengan AJAX search
+            $('#select_anggota').select2({
+                placeholder: '-- Ketik nama anggota untuk mencari --',
+                allowClear: true,
+                minimumInputLength: 1, // Minimal 1 karakter untuk mulai search
+                ajax: {
+                    url: '@Url.Action("SearchAnggota", "Peminjaman")',
+                    dataType: 'json',
+                    delay: 250, // Delay 250ms sebelum search
+                    data: function (params) {
+                        return {
+                            term: params.term // Parameter pencarian
+                        };
+                    },
+                    processResults: function (data) {
+                        return {
+                            results: data
+                        };
+                    },
+                    cache: true
+                }
+            });
+            
+            // Inisialisasi Select2 untuk Buku dengan AJAX search
+            $('#select_buku').select2({
+                placeholder: '-- Ketik judul buku untuk mencari --',
+                allowClear: true,
+                minimumInputLength: 1, // Minimal 1 karakter untuk mulai search
+                ajax: {
+                    url: '@Url.Action("SearchBuku", "Peminjaman")',
+                    dataType: 'json',
+                    delay: 250,
+                    data: function (params) {
+                        return {
+                            term: params.term
+                        };
+                    },
+                    processResults: function (data) {
+                        return {
+                            results: data
+                        };
+                    },
+                    cache: true
+                }
+            });
+        });
+    </script>
+}

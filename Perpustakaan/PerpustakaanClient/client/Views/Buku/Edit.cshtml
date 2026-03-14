@@ -1,0 +1,63 @@
+@model client.Models.BukuModel
+@{
+    ViewBag.Title = "Edit Buku";
+}
+
+<h2>Edit Buku</h2>
+
+@if (ViewBag.ErrorMessage != null)
+{
+    <div class="alert alert-danger alert-dismissible">
+        <button type="button" class="close" data-dismiss="alert">&times;</button>
+        <i class="glyphicon glyphicon-exclamation-sign"></i> <strong>Error:</strong> @ViewBag.ErrorMessage
+    </div>
+}
+
+@using (Html.BeginForm())
+{
+    @Html.HiddenFor(m => m.id_buku)
+    
+    <div class="form-horizontal">
+        <div class="form-group">
+            <label class="control-label col-md-2">Kode Buku</label>
+            <div class="col-md-10">
+                @Html.TextBoxFor(m => m.kode_buku, new { @class = "form-control" })
+            </div>
+        </div>
+
+        <div class="form-group">
+            <label class="control-label col-md-2">Judul Buku</label>
+            <div class="col-md-10">
+                @Html.TextBoxFor(m => m.judul_buku, new { @class = "form-control" })
+            </div>
+        </div>
+
+        <div class="form-group">
+            <label class="control-label col-md-2">Penulis</label>
+            <div class="col-md-10">
+                @Html.TextBoxFor(m => m.penulis, new { @class = "form-control" })
+            </div>
+        </div>
+
+        <div class="form-group">
+            <label class="control-label col-md-2">Kategori</label>
+            <div class="col-md-10">
+                @Html.DropDownListFor(m => m.id_kategori, (SelectList)ViewBag.KategoriList, "-- Pilih Kategori --", new { @class = "form-control" })
+            </div>
+        </div>
+
+        <div class="form-group">
+            <label class="control-label col-md-2">Stok</label>
+            <div class="col-md-10">
+                @Html.TextBoxFor(m => m.stok, new { @class = "form-control", type = "number" })
+            </div>
+        </div>
+
+        <div class="form-group">
+            <div class="col-md-offset-2 col-md-10">
+                <input type="submit" value="Update" class="btn btn-success" />
+                <a href="@Url.Action("Index")" class="btn btn-default">Kembali</a>
+            </div>
+        </div>
+    </div>
+}

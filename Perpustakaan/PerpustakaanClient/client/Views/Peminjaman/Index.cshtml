@@ -1,0 +1,149 @@
+@model List<client.Models.PeminjamanModel>
+@{
+    ViewBag.Title = "Daftar Peminjaman";
+}
+
+<h2>Daftar Transaksi Peminjaman Buku</h2>
+
+@if (TempData["SuccessMessage"] != null)
+{
+    <div class="alert alert-success alert-dismissible">
+        <button type="button" class="close" data-dismiss="alert">&times;</button>
+        <i class="glyphicon glyphicon-ok-sign"></i> @TempData["SuccessMessage"]
+    </div>
+}
+
+@if (TempData["ErrorMessage"] != null)
+{
+    <div class="alert alert-danger alert-dismissible">
+        <button type="button" class="close" data-dismiss="alert">&times;</button>
+        <i class="glyphicon glyphicon-exclamation-sign"></i> @TempData["ErrorMessage"]
+    </div>
+}
+
+<div class="row" style="margin-bottom: 15px;">
+    <div class="col-md-6">
+        <a href="@Url.Action("Create")" class="btn btn-primary">
+            <i class="glyphicon glyphicon-plus"></i> Tambah Peminjaman Baru
+        </a>
+        <a href="@Url.Action("Index", "Home")" class="btn btn-default">
+            <i class="glyphicon glyphicon-arrow-left"></i> Kembali ke Dashboard
+        </a>
+    </div>
+    <div class="col-md-6">
+        @using (Html.BeginForm("Index", "Peminjaman", FormMethod.Get, new { @class = "form-inline pull-right" }))
+        {
+            <div class="input-group">
+                <input type="text" name="search" class="form-control" placeholder="Cari anggota, buku, petugas..." value="@ViewBag.SearchKeyword" style="width: 300px;">
+                <span class="input-group-btn">
+                    <button class="btn btn-default" type="submit">
+                        <i class="glyphicon glyphicon-search"></i> Cari
+                    </button>
+                </span>
+            </div>
+            
+            if (!string.IsNullOrEmpty(ViewBag.SearchKeyword as string))
+            {
+                <a href="@Url.Action("Index")" class="btn btn-link">
+                    <i class="glyphicon glyphicon-remove"></i> Reset
+                </a>
+            }
+        }
+    </div>
+</div>
+
+<!-- Filter Tabs -->
+<ul class="nav nav-tabs" style="margin-bottom: 20px;">
+    <li class="@(string.IsNullOrEmpty(ViewBag.FilterActive as string) ? "active" : "")">
+        <a href="@Url.Action("Index")">
+            <i class="glyphicon glyphicon-list"></i> Semua Peminjaman
+        </a>
+    </li>
+    <li class="@(ViewBag.FilterActive == "aktif" ? "active" : "")">
+        <a href="@Url.Action("Index", new { filter = "aktif" })">
+            <i class="glyphicon glyphicon-time"></i> Peminjaman Aktif
+        </a>
+    </li>
+</ul>
+
+<table class="table table-striped table-bordered">
+    <thead>
+        <tr>
+            <th>ID</th>
+            <th>Anggota</th>
+            <th>Buku</th>
+            <th>Petugas</th>
+            <th>Tanggal Pinjam</th>
+            <th>Tanggal Kembali</th>
+            <th>Status</th>
+            <th>Aksi</th>
+        </tr>
+    </thead>
+    <tbody>
+        @if (Model != null && Model.Count > 0)
+        {
+            foreach (var item in Model)
+            {
+                <tr>
+                    <td>@item.id_pinjam</td>
+                    <td>@(item.anggota != null ? item.anggota.nama_anggota : "-")</td>
+                    <td>@(item.buku != null ? item.buku.judul_buku : "-")</td>
+                    <td>@(item.petugas != null ? item.petugas.nama_lengkap : "-")</td>
+                    <td>@(item.tanggal_pinjam.HasValue ? item.tanggal_pinjam.Value.ToString("dd MMM yyyy") : "-")</td>
+                    <td>@(item.tanggal_kembali.HasValue ? item.tanggal_kembali.Value.ToString("dd MMM yyyy") : "-")</td>
+                    <td>
+                        @if (item.status == "Dipinjam")
+                        {
+                            <span class="label label-warning">@item.status</span>
+                        }
+                        else
+                        {
+                            <span class="label label-success">@item.status</span>
+                        }
+                    </td>
+                    <td>
+                        @if (item.status == "Dipinjam")
+                        {
+                            using (Html.BeginForm("Kembalikan", "Peminjaman", new { id = item.id_pinjam }, FormMethod.Post, new { style = "display:inline;" }))
+                            {
+                                <button type="submit" class="btn btn-success btn-sm" onclick="return confirm('Proses pengembalian buku ini?')">
+                                    <i class="glyphicon glyphicon-ok"></i> Kembalikan
+                                </button>
+                            }
+                            
+                            using (Html.BeginForm("DeleteConfirmed", "Peminjaman", new { id = item.id_pinjam }, FormMethod.Post, new { style = "display:inline;" }))
+                            {
+                                <button type="submit" class="btn btn-danger btn-sm" onclick="return confirm('Yakin ingin menghapus peminjaman ini?')">
+                                    <i class="glyphicon glyphicon-trash"></i> Hapus
+                                </button>
+                            }
+                        }
+                        else
+                        {
+                            <span class="text-muted">
+                                <i class="glyphicon glyphicon-check"></i> Sudah dikembalikan
+                            </span>
+                        }
+                    </td>
+                </tr>
+            }
+        }
+        else
+        {
+            <tr>
+                <td colspan="8" class="text-center">
+                    @{
+                        if (!string.IsNullOrEmpty(ViewBag.SearchKeyword as string))
+                        {
+                            <text>Tidak ada peminjaman yang sesuai dengan pencarian "<strong>@ViewBag.SearchKeyword</strong>"</text>
+                        }
+                        else
+                        {
+                            <text>Tidak ada data peminjaman</text>
+                        }
+                    }
+                </td>
+            </tr>
+        }
+    </tbody>
+</table>

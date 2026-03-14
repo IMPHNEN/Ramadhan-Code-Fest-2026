@@ -1,0 +1,92 @@
+@{
+    ViewBag.Title = "Dashboard";
+}
+
+<div class="row">
+    <div class="col-md-12">
+        <div class="alert alert-success">
+            <h4><i class="glyphicon glyphicon-user"></i> Selamat Datang!</h4>
+            <p><strong>Username:</strong> @Session["Username"]</p>
+            <p><strong>Role:</strong> @Session["Role"]</p>
+        </div>
+    </div>
+</div>
+
+<h2>Dashboard Sistem Perpustakaan</h2>
+<p class="lead">Kelola data buku, kategori, dan anggota perpustakaan dengan mudah.</p>
+
+<div class="row" style="margin-top: 30px;">
+    <div class="col-md-3">
+        <div class="panel panel-primary">
+            <div class="panel-heading">
+                <h3 class="panel-title"><i class="glyphicon glyphicon-book"></i> Manajemen Buku</h3>
+            </div>
+            <div class="panel-body">
+                <p>Kelola koleksi buku perpustakaan. Tambah, lihat, edit, dan hapus data buku beserta kategorinya.</p>
+                <a href="@Url.Action("Index", "Buku")" class="btn btn-primary btn-block">
+                    <i class="glyphicon glyphicon-list"></i> Lihat Daftar Buku
+                </a>
+            </div>
+        </div>
+    </div>
+
+    <div class="col-md-3">
+        <div class="panel panel-info">
+            <div class="panel-heading">
+                <h3 class="panel-title"><i class="glyphicon glyphicon-tags"></i> Kategori Buku</h3>
+            </div>
+            <div class="panel-body">
+                <p>Atur kategori buku untuk mempermudah klasifikasi dan pencarian koleksi perpustakaan.</p>
+                <a href="@Url.Action("Index", "Kategori")" class="btn btn-info btn-block">
+                    <i class="glyphicon glyphicon-list"></i> Kelola Kategori
+                </a>
+            </div>
+        </div>
+    </div>
+
+    <div class="col-md-3">
+        <div class="panel panel-success">
+            <div class="panel-heading">
+                <h3 class="panel-title"><i class="glyphicon glyphicon-user"></i> Data Anggota</h3>
+            </div>
+            <div class="panel-body">
+                <p>Kelola data anggota perpustakaan. Daftar anggota baru dan update informasi anggota.</p>
+                <a href="@Url.Action("Index", "Anggota")" class="btn btn-success btn-block">
+                    <i class="glyphicon glyphicon-list"></i> Lihat Anggota
+                </a>
+            </div>
+        </div>
+    </div>
+
+    <div class="col-md-3">
+        <div class="panel panel-warning">
+            <div class="panel-heading">
+                <h3 class="panel-title"><i class="glyphicon glyphicon-transfer"></i> Transaksi Peminjaman</h3>
+            </div>
+            <div class="panel-body">
+                <p>Kelola transaksi peminjaman dan pengembalian buku. Tambah peminjaman baru dan proses pengembalian.</p>
+                <a href="@Url.Action("Index", "Peminjaman")" class="btn btn-warning btn-block">
+                    <i class="glyphicon glyphicon-list"></i> Kelola Peminjaman
+                </a>
+            </div>
+        </div>
+    </div>
+</div>
+
+<div class="row" style="margin-top: 20px;">
+    <div class="col-md-12">
+        <div class="panel panel-default">
+            <div class="panel-heading">
+                <h3 class="panel-title"><i class="glyphicon glyphicon-info-sign"></i> Informasi Sistem</h3>
+            </div>
+            <div class="panel-body">
+                <p><strong>Sistem Informasi Perpustakaan</strong> - Aplikasi web untuk mengelola data perpustakaan berbasis ASP.NET MVC dan REST API.</p>
+                <p>
+                    <a href="@Url.Action("Logout", "Home")" class="btn btn-danger">
+                        <i class="glyphicon glyphicon-log-out"></i> Logout
+                    </a>
+                </p>
+            </div>
+        </div>
+    </div>
+</div>

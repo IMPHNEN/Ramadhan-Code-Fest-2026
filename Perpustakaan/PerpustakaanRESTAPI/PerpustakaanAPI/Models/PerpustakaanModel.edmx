@@ -1,0 +1,346 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<edmx:Edmx Version="3.0" xmlns:edmx="http://schemas.microsoft.com/ado/2009/11/edmx">
+  <!-- EF Runtime content -->
+  <edmx:Runtime>
+    <!-- SSDL content -->
+    <edmx:StorageModels>
+    <Schema Namespace="PerpustakaanDBModel.Store" Provider="System.Data.SqlClient" ProviderManifestToken="2012" Alias="Self" xmlns:store="http://schemas.microsoft.com/ado/2007/12/edm/EntityStoreSchemaGenerator" xmlns:customannotation="http://schemas.microsoft.com/ado/2013/11/edm/customannotation" xmlns="http://schemas.microsoft.com/ado/2009/11/edm/ssdl">
+        <EntityType Name="anggota">
+          <Key>
+            <PropertyRef Name="id_anggota" />
+          </Key>
+          <Property Name="id_anggota" Type="int" StoreGeneratedPattern="Identity" Nullable="false" />
+          <Property Name="nama_anggota" Type="varchar" MaxLength="100" />
+          <Property Name="alamat" Type="varchar" MaxLength="255" />
+          <Property Name="telp" Type="varchar" MaxLength="20" />
+          <Property Name="tanggal_daftar" Type="date" />
+        </EntityType>
+        <EntityType Name="buku">
+          <Key>
+            <PropertyRef Name="id_buku" />
+          </Key>
+          <Property Name="id_buku" Type="int" StoreGeneratedPattern="Identity" Nullable="false" />
+          <Property Name="id_kategori" Type="int" />
+          <Property Name="kode_buku" Type="varchar" MaxLength="50" Nullable="false" />
+          <Property Name="judul_buku" Type="varchar" MaxLength="200" Nullable="false" />
+          <Property Name="penulis" Type="varchar" MaxLength="100" />
+          <Property Name="stok" Type="int" />
+        </EntityType>
+        <EntityType Name="kategori">
+          <Key>
+            <PropertyRef Name="id_kategori" />
+          </Key>
+          <Property Name="id_kategori" Type="int" StoreGeneratedPattern="Identity" Nullable="false" />
+          <Property Name="nama_kategori" Type="varchar" MaxLength="100" Nullable="false" />
+        </EntityType>
+        <EntityType Name="peminjaman">
+          <Key>
+            <PropertyRef Name="id_pinjam" />
+          </Key>
+          <Property Name="id_pinjam" Type="int" StoreGeneratedPattern="Identity" Nullable="false" />
+          <Property Name="id_anggota" Type="int" Nullable="false" />
+          <Property Name="id_user" Type="int" Nullable="false" />
+          <Property Name="id_buku" Type="int" Nullable="false" />
+          <Property Name="tanggal_pinjam" Type="date" Nullable="false" />
+          <Property Name="tanggal_kembali" Type="date" />
+          <Property Name="status" Type="varchar" MaxLength="20" Nullable="false" />
+        </EntityType>
+        <EntityType Name="users">
+          <Key>
+            <PropertyRef Name="id_user" />
+          </Key>
+          <Property Name="id_user" Type="int" StoreGeneratedPattern="Identity" Nullable="false" />
+          <Property Name="username" Type="varchar" MaxLength="50" Nullable="false" />
+          <Property Name="password" Type="varchar" MaxLength="255" Nullable="false" />
+          <Property Name="nama_lengkap" Type="varchar" MaxLength="100" />
+          <Property Name="role" Type="varchar" MaxLength="20" />
+        </EntityType>
+        <Association Name="FK_Buku_Kategori">
+          <End Role="kategori" Type="Self.kategori" Multiplicity="0..1" />
+          <End Role="buku" Type="Self.buku" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="kategori">
+              <PropertyRef Name="id_kategori" />
+            </Principal>
+            <Dependent Role="buku">
+              <PropertyRef Name="id_kategori" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="FK_Peminjaman_Anggota">
+          <End Role="anggota" Type="Self.anggota" Multiplicity="1" />
+          <End Role="peminjaman" Type="Self.peminjaman" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="anggota">
+              <PropertyRef Name="id_anggota" />
+            </Principal>
+            <Dependent Role="peminjaman">
+              <PropertyRef Name="id_anggota" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="FK_peminjaman_Buku">
+          <End Role="buku" Type="Self.buku" Multiplicity="1" />
+          <End Role="peminjaman" Type="Self.peminjaman" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="buku">
+              <PropertyRef Name="id_buku" />
+            </Principal>
+            <Dependent Role="peminjaman">
+              <PropertyRef Name="id_buku" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="FK_Peminjaman_User">
+          <End Role="users" Type="Self.users" Multiplicity="1" />
+          <End Role="peminjaman" Type="Self.peminjaman" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="users">
+              <PropertyRef Name="id_user" />
+            </Principal>
+            <Dependent Role="peminjaman">
+              <PropertyRef Name="id_user" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <EntityContainer Name="PerpustakaanDBModelStoreContainer">
+          <EntitySet Name="anggota" EntityType="Self.anggota" Schema="dbo" store:Type="Tables" />
+          <EntitySet Name="buku" EntityType="Self.buku" Schema="dbo" store:Type="Tables" />
+          <EntitySet Name="kategori" EntityType="Self.kategori" Schema="dbo" store:Type="Tables" />
+          <EntitySet Name="peminjaman" EntityType="Self.peminjaman" Schema="dbo" store:Type="Tables" />
+          <EntitySet Name="users" EntityType="Self.users" Schema="dbo" store:Type="Tables" />
+          <AssociationSet Name="FK_Buku_Kategori" Association="Self.FK_Buku_Kategori">
+            <End Role="kategori" EntitySet="kategori" />
+            <End Role="buku" EntitySet="buku" />
+          </AssociationSet>
+          <AssociationSet Name="FK_Peminjaman_Anggota" Association="Self.FK_Peminjaman_Anggota">
+            <End Role="anggota" EntitySet="anggota" />
+            <End Role="peminjaman" EntitySet="peminjaman" />
+          </AssociationSet>
+          <AssociationSet Name="FK_peminjaman_Buku" Association="Self.FK_peminjaman_Buku">
+            <End Role="buku" EntitySet="buku" />
+            <End Role="peminjaman" EntitySet="peminjaman" />
+          </AssociationSet>
+          <AssociationSet Name="FK_Peminjaman_User" Association="Self.FK_Peminjaman_User">
+            <End Role="users" EntitySet="users" />
+            <End Role="peminjaman" EntitySet="peminjaman" />
+          </AssociationSet>
+        </EntityContainer>
+      </Schema></edmx:StorageModels>
+    <!-- CSDL content -->
+    <edmx:ConceptualModels>
+      <Schema Namespace="PerpustakaanDBModel" Alias="Self" annotation:UseStrongSpatialTypes="false" xmlns:annotation="http://schemas.microsoft.com/ado/2009/02/edm/annotation" xmlns:customannotation="http://schemas.microsoft.com/ado/2013/11/edm/customannotation" xmlns="http://schemas.microsoft.com/ado/2009/11/edm">
+        <EntityType Name="anggota">
+          <Key>
+            <PropertyRef Name="id_anggota" />
+          </Key>
+          <Property Name="id_anggota" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
+          <Property Name="nama_anggota" Type="String" MaxLength="100" FixedLength="false" Unicode="false" />
+          <Property Name="alamat" Type="String" MaxLength="255" FixedLength="false" Unicode="false" />
+          <Property Name="telp" Type="String" MaxLength="20" FixedLength="false" Unicode="false" />
+          <Property Name="tanggal_daftar" Type="DateTime" Precision="0" />
+          <NavigationProperty Name="peminjaman" Relationship="PerpustakaanDBModel.FK_Peminjaman_Anggota" FromRole="anggota" ToRole="peminjaman" />
+        </EntityType>
+        <EntityType Name="kategori">
+          <Key>
+            <PropertyRef Name="id_kategori" />
+          </Key>
+          <Property Name="id_kategori" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
+          <Property Name="nama_kategori" Type="String" MaxLength="100" FixedLength="false" Unicode="false" Nullable="false" />
+          <NavigationProperty Name="buku" Relationship="PerpustakaanDBModel.FK_Buku_Kategori" FromRole="kategori" ToRole="buku" />
+        </EntityType>
+        <EntityType Name="users">
+          <Key>
+            <PropertyRef Name="id_user" />
+          </Key>
+          <Property Name="id_user" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
+          <Property Name="username" Type="String" MaxLength="50" FixedLength="false" Unicode="false" Nullable="false" />
+          <Property Name="password" Type="String" MaxLength="255" FixedLength="false" Unicode="false" Nullable="false" />
+          <Property Name="nama_lengkap" Type="String" MaxLength="100" FixedLength="false" Unicode="false" />
+          <Property Name="role" Type="String" MaxLength="20" FixedLength="false" Unicode="false" />
+          <NavigationProperty Name="peminjaman" Relationship="PerpustakaanDBModel.FK_Peminjaman_User" FromRole="users" ToRole="peminjaman" />
+        </EntityType>
+        <EntityContainer Name="PerpustakaanDBEntities" annotation:LazyLoadingEnabled="true">
+          <EntitySet Name="anggota" EntityType="Self.anggota" />
+          <EntitySet Name="kategori" EntityType="Self.kategori" />
+          <EntitySet Name="users" EntityType="Self.users" />
+          <EntitySet Name="peminjaman" EntityType="PerpustakaanDBModel.peminjaman" />
+          <AssociationSet Name="FK_Peminjaman_Anggota" Association="PerpustakaanDBModel.FK_Peminjaman_Anggota">
+            <End Role="anggota" EntitySet="anggota" />
+            <End Role="peminjaman" EntitySet="peminjaman" />
+          </AssociationSet>
+          <AssociationSet Name="FK_Peminjaman_User" Association="PerpustakaanDBModel.FK_Peminjaman_User">
+            <End Role="users" EntitySet="users" />
+            <End Role="peminjaman" EntitySet="peminjaman" />
+          </AssociationSet>
+          <EntitySet Name="buku" EntityType="PerpustakaanDBModel.buku" />
+          <AssociationSet Name="FK_Buku_Kategori" Association="PerpustakaanDBModel.FK_Buku_Kategori">
+            <End Role="kategori" EntitySet="kategori" />
+            <End Role="buku" EntitySet="buku" />
+          </AssociationSet>
+          <AssociationSet Name="FK_peminjaman_Buku" Association="PerpustakaanDBModel.FK_peminjaman_Buku">
+            <End Role="buku" EntitySet="buku" />
+            <End Role="peminjaman" EntitySet="peminjaman" />
+          </AssociationSet>
+        </EntityContainer>
+        <EntityType Name="peminjaman">
+          <Key>
+            <PropertyRef Name="id_pinjam" />
+          </Key>
+          <Property Name="id_pinjam" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
+          <Property Name="id_anggota" Type="Int32" Nullable="false" />
+          <Property Name="id_user" Type="Int32" Nullable="false" />
+          <Property Name="id_buku" Type="Int32" Nullable="false" />
+          <Property Name="tanggal_pinjam" Type="DateTime" Nullable="false" Precision="0" />
+          <Property Name="tanggal_kembali" Type="DateTime" Precision="0" />
+          <Property Name="status" Type="String" Nullable="false" MaxLength="20" FixedLength="false" Unicode="false" />
+          <NavigationProperty Name="anggota" Relationship="PerpustakaanDBModel.FK_Peminjaman_Anggota" FromRole="peminjaman" ToRole="anggota" />
+          <NavigationProperty Name="users" Relationship="PerpustakaanDBModel.FK_Peminjaman_User" FromRole="peminjaman" ToRole="users" />
+          <NavigationProperty Name="buku" Relationship="PerpustakaanDBModel.FK_peminjaman_Buku" FromRole="peminjaman" ToRole="buku" />
+        </EntityType>
+        <Association Name="FK_Peminjaman_Anggota">
+          <End Type="PerpustakaanDBModel.anggota" Role="anggota" Multiplicity="1" />
+          <End Type="PerpustakaanDBModel.peminjaman" Role="peminjaman" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="anggota">
+              <PropertyRef Name="id_anggota" />
+            </Principal>
+            <Dependent Role="peminjaman">
+              <PropertyRef Name="id_anggota" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="FK_Peminjaman_User">
+          <End Type="PerpustakaanDBModel.users" Role="users" Multiplicity="1" />
+          <End Type="PerpustakaanDBModel.peminjaman" Role="peminjaman" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="users">
+              <PropertyRef Name="id_user" />
+            </Principal>
+            <Dependent Role="peminjaman">
+              <PropertyRef Name="id_user" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <EntityType Name="buku">
+          <Key>
+            <PropertyRef Name="id_buku" />
+          </Key>
+          <Property Name="id_buku" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
+          <Property Name="id_kategori" Type="Int32" />
+          <Property Name="kode_buku" Type="String" Nullable="false" MaxLength="50" FixedLength="false" Unicode="false" />
+          <Property Name="judul_buku" Type="String" Nullable="false" MaxLength="200" FixedLength="false" Unicode="false" />
+          <Property Name="penulis" Type="String" MaxLength="100" FixedLength="false" Unicode="false" />
+          <Property Name="stok" Type="Int32" />
+          <NavigationProperty Name="kategori" Relationship="PerpustakaanDBModel.FK_Buku_Kategori" FromRole="buku" ToRole="kategori" />
+          <NavigationProperty Name="peminjaman" Relationship="PerpustakaanDBModel.FK_peminjaman_Buku" FromRole="buku" ToRole="peminjaman" />
+        </EntityType>
+        <Association Name="FK_Buku_Kategori">
+          <End Type="PerpustakaanDBModel.kategori" Role="kategori" Multiplicity="0..1" />
+          <End Type="PerpustakaanDBModel.buku" Role="buku" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="kategori">
+              <PropertyRef Name="id_kategori" />
+            </Principal>
+            <Dependent Role="buku">
+              <PropertyRef Name="id_kategori" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="FK_peminjaman_Buku">
+          <End Type="PerpustakaanDBModel.buku" Role="buku" Multiplicity="1" />
+          <End Type="PerpustakaanDBModel.peminjaman" Role="peminjaman" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="buku">
+              <PropertyRef Name="id_buku" />
+            </Principal>
+            <Dependent Role="peminjaman">
+              <PropertyRef Name="id_buku" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+      </Schema>
+    </edmx:ConceptualModels>
+    <!-- C-S mapping content -->
+    <edmx:Mappings>
+      <Mapping Space="C-S" xmlns="http://schemas.microsoft.com/ado/2009/11/mapping/cs">
+        <EntityContainerMapping StorageEntityContainer="PerpustakaanDBModelStoreContainer" CdmEntityContainer="PerpustakaanDBEntities">
+          <EntitySetMapping Name="anggota">
+            <EntityTypeMapping TypeName="PerpustakaanDBModel.anggota">
+              <MappingFragment StoreEntitySet="anggota">
+                <ScalarProperty Name="id_anggota" ColumnName="id_anggota" />
+                <ScalarProperty Name="nama_anggota" ColumnName="nama_anggota" />
+                <ScalarProperty Name="alamat" ColumnName="alamat" />
+                <ScalarProperty Name="telp" ColumnName="telp" />
+                <ScalarProperty Name="tanggal_daftar" ColumnName="tanggal_daftar" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
+          <EntitySetMapping Name="kategori">
+            <EntityTypeMapping TypeName="PerpustakaanDBModel.kategori">
+              <MappingFragment StoreEntitySet="kategori">
+                <ScalarProperty Name="id_kategori" ColumnName="id_kategori" />
+                <ScalarProperty Name="nama_kategori" ColumnName="nama_kategori" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
+          <EntitySetMapping Name="users">
+            <EntityTypeMapping TypeName="PerpustakaanDBModel.users">
+              <MappingFragment StoreEntitySet="users">
+                <ScalarProperty Name="id_user" ColumnName="id_user" />
+                <ScalarProperty Name="username" ColumnName="username" />
+                <ScalarProperty Name="password" ColumnName="password" />
+                <ScalarProperty Name="nama_lengkap" ColumnName="nama_lengkap" />
+                <ScalarProperty Name="role" ColumnName="role" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
+          <EntitySetMapping Name="peminjaman">
+            <EntityTypeMapping TypeName="PerpustakaanDBModel.peminjaman">
+              <MappingFragment StoreEntitySet="peminjaman">
+                <ScalarProperty Name="status" ColumnName="status" />
+                <ScalarProperty Name="tanggal_kembali" ColumnName="tanggal_kembali" />
+                <ScalarProperty Name="tanggal_pinjam" ColumnName="tanggal_pinjam" />
+                <ScalarProperty Name="id_buku" ColumnName="id_buku" />
+                <ScalarProperty Name="id_user" ColumnName="id_user" />
+                <ScalarProperty Name="id_anggota" ColumnName="id_anggota" />
+                <ScalarProperty Name="id_pinjam" ColumnName="id_pinjam" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
+          <EntitySetMapping Name="buku">
+            <EntityTypeMapping TypeName="PerpustakaanDBModel.buku">
+              <MappingFragment StoreEntitySet="buku">
+                <ScalarProperty Name="stok" ColumnName="stok" />
+                <ScalarProperty Name="penulis" ColumnName="penulis" />
+                <ScalarProperty Name="judul_buku" ColumnName="judul_buku" />
+                <ScalarProperty Name="kode_buku" ColumnName="kode_buku" />
+                <ScalarProperty Name="id_kategori" ColumnName="id_kategori" />
+                <ScalarProperty Name="id_buku" ColumnName="id_buku" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
+        </EntityContainerMapping>
+      </Mapping>
+    </edmx:Mappings>
+  </edmx:Runtime>
+  <!-- EF Designer content (DO NOT EDIT MANUALLY BELOW HERE) -->
+  <Designer xmlns="http://schemas.microsoft.com/ado/2009/11/edmx">
+    <Connection>
+      <DesignerInfoPropertySet>
+        <DesignerProperty Name="MetadataArtifactProcessing" Value="EmbedInOutputAssembly" />
+      </DesignerInfoPropertySet>
+    </Connection>
+    <Options>
+      <DesignerInfoPropertySet>
+        <DesignerProperty Name="ValidateOnBuild" Value="true" />
+        <DesignerProperty Name="EnablePluralization" Value="false" />
+        <DesignerProperty Name="IncludeForeignKeysInModel" Value="true" />
+        <DesignerProperty Name="UseLegacyProvider" Value="false" />
+        <DesignerProperty Name="CodeGenerationStrategy" Value="None" />
+      </DesignerInfoPropertySet>
+    </Options>
+    <!-- Diagram content (shape and connector positions) -->
+    <Diagrams></Diagrams>
+  </Designer>
+</edmx:Edmx>
